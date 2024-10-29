@@ -1,0 +1,13 @@
+---
+title: "main"
+format: html
+editor: visual
+---
+
+## Leo Guzman - attempt 1
+
+My plan is to find the average amount of shootings per year by race
+
+```{r}
+
+```
