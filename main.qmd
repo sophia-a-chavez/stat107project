@@ -9,5 +9,43 @@ editor: visual
 My plan is to find the average amount of shootings per year by race
 
 ```{r}
+FatalShootingsStats <- read.csv("FatalPoliceShootings_US.csv")
 
+print(class(FatalShootingsStats))
+
+head(FatalShootingsStats)
+```
+
+```{r}
+#Convert the `date` column to Date format so can extract the year
+FatalShootingsStats$date <- as.Date(FatalShootingsStats$date, format = "%m/%d/%Y")
+
+#Made new column for year as an int
+FatalShootingsStats$year <- as.integer(format(FatalShootingsStats$date, "%Y"))
+```
+
+```{r}
+#Analyze 2015 as a test run
+data_filtered <- FatalShootingsStats[FatalShootingsStats$year == 2015, ]
+
+#Grab the total amount of times certain races are in the data
+asian_count <- nrow(data_filtered[data_filtered$race_name == 'Asian', ])
+black_count <- nrow(data_filtered[data_filtered$race_name == 'Black', ])
+white_count <- nrow(data_filtered[data_filtered$race_name == 'White', ])
+hispanic_count <- nrow(data_filtered[data_filtered$race_name == 'Hispanic', ])
+native_count <- nrow(data_filtered[data_filtered$race_name == 'Native American', ])
+other_count <- nrow(data_filtered[data_filtered$race_name == 'Other', ])
+unknown_count <- nrow(data_filtered[data_filtered$race_name == 'Unknown', ])
+
+#Created a data.frame with counts so can plot them
+race_counts <- data.frame(
+  race = c("White", "Black", "Hispanic", "Asian", "Native", "Other", "Unknown"),
+  count = c(white_count, black_count, hispanic_count, asian_count, native_count, other_count, unknown_count)
+)
+
+#Created a pie chart
+pie(race_counts$count, 
+    labels = race_counts$race, 
+    main = "Proportion of Different Races in Fatal Shootings in 2015",
+    col = rainbow(length(race_counts$count)))
 ```
