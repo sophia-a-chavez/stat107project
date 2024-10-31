@@ -80,15 +80,31 @@ bodycam_false <- c(sum(data_15$body_camera == "FALSE"), sum(data_16$body_camera 
 
 bodycam_true <- c(sum(data_15$body_camera == "TRUE"), sum(data_16$body_camera == "TRUE"), sum(data_17$body_camera == "TRUE"), sum(data_18$body_camera == "TRUE"), sum(data_19$body_camera == "TRUE"), sum(data_20$body_camera == "TRUE"), sum(data_21$body_camera == "TRUE"), sum(data_22$body_camera == "TRUE"))
 
+bodycam_percent <- c((bodycam_true[1]/total[1]), (bodycam_true[2]/total[2]),(bodycam_true[3]/total[3]),(bodycam_true[4]/total[4]),(bodycam_true[5]/total[5]),(bodycam_true[6]/total[6]),(bodycam_true[7]/total[7]),(bodycam_true[8]/total[7]))
 
-
-year_stats <- data.frame(total, round(average_age, 1), bodycam_false, bodycam_true ) 
-names(year_stats) <- c("Total Fatal Shootings", "Average Age", "No Body Camera", "Yes Body Camera")
+year_stats <- data.frame(total, round(average_age, 1), bodycam_false, bodycam_true, bodycam_percent ) 
+names(year_stats) <- c("Total Fatal Shootings", "Average Age", "No Body Camera", "Yes Body Camera", "percent of yes body camera")
 rownames(year_stats) <- c("2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022")
 year_stats
 
 
 
 
+
+```
+
+```{r}
+# adding colunm for current president -> is not currently working,  
+
+
+FatalShootingsStats$month <- as.integer(format(FatalShootingsStats$date, "%m"))
+FatalShootingsStats$day <- as.integer(format(FatalShootingsStats$date, "%d"))
+
+FatalShootingsStats$President <-ifelse(FatalShootingsStats$month >= 1 & FatalShootingsStats$day >=20 & FatalShootingsStats$year >=2021, FatalShootingsStats$President <-"Joseph R. Biden", FatalShootingsStats$President <-"Donald Trump")
+
+FatalShootingsStats$President <-ifelse((FatalShootingsStats$month >= 1 & FatalShootingsStats$day >=20 & FatalShootingsStats$year <=2016), FatalShootingsStats$President <-"Barack Obama", FatalShootingsStats$President <-"Donald Trump")
+data_18 <- subset(FatalShootingsStats, FatalShootingsStats$year >= 2015 )
+
+data_18
 
 ```
