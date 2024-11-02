@@ -114,7 +114,8 @@ data_18
 race_year_counts <- aggregate(FatalShootingsStats$race_name, 
                               by = list(Year = FatalShootingsStats$year, 
                                         Race = FatalShootingsStats$race_name), 
-                              FUN = length)
+        
+                      FUN = length)
 
 # Rename the count column for clarity
 colnames(race_year_counts)[3] <- "Count"
@@ -131,5 +132,69 @@ barplot(race_counts_matrix, beside = TRUE, col = colors,
         xlab = "Year", ylab = "Number of Fatal Shootings", 
         legend.text = rownames(race_counts_matrix), 
         args.legend = list(x = "topright", inset = c(-0.05, 0)))
+
+```
+
+```{r}
+# Set up an empty plot with the correct axes limits
+plot(NULL, xlim = range(race_year_counts$Year), 
+     ylim = range(race_year_counts$Count), 
+     xlab = "Year", ylab = "Number of Fatal Shootings", 
+     main = "Fatal Shootings by Race Over the Years")
+
+# Define colors for each race
+race_colors <- c("blue", "green", "red", "purple", "orange", "pink", "gray")
+
+# Get unique races
+unique_races <- unique(race_year_counts$Race)
+
+# Loop through each race to plot its line on the graph
+for (i in 1:length(unique_races)) {
+  # Subset data for the current race
+  race_data <- subset(race_year_counts, Race == unique_races[i])
+  
+  # Plot the line for this race
+  lines(race_data$Year, race_data$Count, type = "o", col = race_colors[i], pch = 16)
+}
+
+# Add a legend
+legend("topright", legend = unique_races, col = race_colors, pch = 16, lty = 1)
+```
+
+```{r}
+# Filter data to include only unarmed incidents
+unarmed_data <- subset(FatalShootingsStats, FatalShootingsStats$armed == "unarmed")
+
+# Count unarmed fatalities by race
+unarmed_deaths_by_race <- aggregate(unarmed_data$armed, 
+                                    by = list(Race = unarmed_data$race_name), 
+                                    FUN = length)
+
+# Rename the count column for clarity
+colnames(unarmed_deaths_by_race)[2] <- "Unarmed_Deaths"
+
+# Display the counts
+unarmed_deaths_by_race
+
+
+
+```
+
+```{r}
+# Adjust margins to give more space to labels
+par(mar = c(5, 10, 4, 2) + 0.1) # Increase left margin for y-axis labels
+
+# Create a horizontal bar plot without a y-axis label
+barplot(race_unarmed_comparison$Unarmed_Death_Percentage,
+        names.arg = race_unarmed_comparison$Race,
+        main = "Percentage of Unarmed Fatalities by Race",
+        xlab = "Percentage of Unarmed Fatalities",
+        col = "lightcoral",
+        horiz = TRUE,       # Horizontal bars
+        las = 1,            # Ensure labels are horizontal on y-axis
+        cex.names = 0.9)    # Adjust label size if needed
+
+# Reset margins after plotting (optional if running multiple plots in sequence)
+par(mar = c(5, 4, 4, 2) + 0.1)
 
 ```
