@@ -160,3 +160,41 @@ for (i in 1:length(unique_races)) {
 # Add a legend
 legend("topright", legend = unique_races, col = race_colors, pch = 16, lty = 1)
 ```
+
+```{r}
+# Filter data to include only unarmed incidents
+unarmed_data <- subset(FatalShootingsStats, FatalShootingsStats$armed == "unarmed")
+
+# Count unarmed fatalities by race
+unarmed_deaths_by_race <- aggregate(unarmed_data$armed, 
+                                    by = list(Race = unarmed_data$race_name), 
+                                    FUN = length)
+
+# Rename the count column for clarity
+colnames(unarmed_deaths_by_race)[2] <- "Unarmed_Deaths"
+
+# Display the counts
+unarmed_deaths_by_race
+
+
+
+```
+
+```{r}
+# Adjust margins to give more space to labels
+par(mar = c(5, 10, 4, 2) + 0.1) # Increase left margin for y-axis labels
+
+# Create a horizontal bar plot without a y-axis label
+barplot(race_unarmed_comparison$Unarmed_Death_Percentage,
+        names.arg = race_unarmed_comparison$Race,
+        main = "Percentage of Unarmed Fatalities by Race",
+        xlab = "Percentage of Unarmed Fatalities",
+        col = "lightcoral",
+        horiz = TRUE,       # Horizontal bars
+        las = 1,            # Ensure labels are horizontal on y-axis
+        cex.names = 0.9)    # Adjust label size if needed
+
+# Reset margins after plotting (optional if running multiple plots in sequence)
+par(mar = c(5, 4, 4, 2) + 0.1)
+
+```
