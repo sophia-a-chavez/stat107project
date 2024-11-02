@@ -108,3 +108,28 @@ data_18 <- subset(FatalShootingsStats, FatalShootingsStats$year >= 2015 )
 data_18
 
 ```
+
+```{r}
+# Aggregate data by year and race_name
+race_year_counts <- aggregate(FatalShootingsStats$race_name, 
+                              by = list(Year = FatalShootingsStats$year, 
+                                        Race = FatalShootingsStats$race_name), 
+                              FUN = length)
+
+# Rename the count column for clarity
+colnames(race_year_counts)[3] <- "Count"
+
+# Create a matrix to store counts for each race across years
+race_counts_matrix <- xtabs(Count ~ Race + Year, data = race_year_counts)
+
+# Set up colors for each race
+colors <- c("lightblue", "lightgreen", "lightcoral", "lightpink", "wheat", "lavender", "gray")
+
+# Create the bar plot
+barplot(race_counts_matrix, beside = TRUE, col = colors,
+        main = "Fatal Shootings by Race and Year",
+        xlab = "Year", ylab = "Number of Fatal Shootings", 
+        legend.text = rownames(race_counts_matrix), 
+        args.legend = list(x = "topright", inset = c(-0.05, 0)))
+
+```
