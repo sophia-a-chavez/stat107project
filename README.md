@@ -17,7 +17,11 @@ and the reported fatal police shootings in the United States.
 
 ##### Body ~
 - We found the average amount of shooting per year by race. What do the results mean?
+- (resources)
+- Talk about our findings and what they signify.
 
 ##### Conclusion ~
 - Were there any correlations between the current political/social climate 
 and the reported fatal police shootings in the United States?
+- What happened like we expected?
+- Was there anything unexpected or surprising? If so, what was it?
