@@ -206,12 +206,35 @@ points(other_count$longitude, other_count$latitude,
 
 points(unknown_count$longitude, unknown_count$latitude,
   pch = 4, col = "orange", cex = 1)
+```
 
+```{r}
+library(dplyr)
+library(ggplot2)
 
+FatalShootingsStats$age <- as.numeric(as.character(FatalShootingsStats$age))
 
+# Create AgeRange dynamically
+FatalShootingsStats$AgeRange <- cut(
+  FatalShootingsStats$age,
+  breaks = c(0, 18, 35, Inf), # Define age range intervals
+  labels = c("0-18", "19-35", "36+"),
+  right = FALSE # Makes intervals inclusive on the left
+)
 
+# Summarize data to count individuals by Race and AgeRange
+summary_data <- FatalShootingsStats %>%
+  group_by(race, AgeRange) %>%
+  summarise(Count = n(), .groups = "drop")
 
-
-
-
+# Create the bar plot
+ggplot(FatalShootingsStats, aes(x = race_name, y = age, fill = AgeRange)) +
+  geom_bar(stat = "identity", position = "dodge") + # Position bars side by side
+  labs(
+    title = "Bar Plot of Races by Age Range",
+    x = "Race",
+    y = "Count"
+  ) +
+  scale_fill_brewer(palette = "Set2") + # Optional color palette
+  theme_minimal() # Clean theme
 ```
