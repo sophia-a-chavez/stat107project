@@ -172,3 +172,46 @@ for (i in 1:length(unique_races)) {
 # Add a legend
 legend("topright", legend = unique_races, col = race_colors, pch = 16, lty = 1)
 ```
+
+```{r}
+##adding map visual, needs work
+library(maps)
+
+asian_count <- subset(FatalShootingsStats, FatalShootingsStats$race_name == 'Asian' )
+black_count <- subset(FatalShootingsStats, FatalShootingsStats$race_name == 'Black')
+white_count <- subset(FatalShootingsStats, FatalShootingsStats$race_name == 'White')
+hispanic_count <- subset(FatalShootingsStats, FatalShootingsStats$race_name == 'Hispanic')
+native_count <-subset(FatalShootingsStats, FatalShootingsStats$race_name =='Native American')
+other_count <- subset(FatalShootingsStats, FatalShootingsStats$race_name == 'Other')
+unknown_count <- subset(FatalShootingsStats, FatalShootingsStats$race_name == 'Unknown')
+
+map("state")
+points(asian_count$longitude, asian_count$latitude,
+  pch = 4, col = "deeppink", cex = 1)
+
+points(black_count$longitude, black_count$latitude,
+  pch = 4, col = "yellow", cex = 1)
+
+points(white_count$longitude, white_count$latitude,
+  pch = 4, col = "red", cex = 1)
+
+points(hispanic_count$longitude, hispanic_count$latitude,
+  pch = 4, col = "purple", cex = 1)
+
+points(native_count$longitude, native_count$latitude,
+  pch = 4, col = "blue", cex = 1)
+
+points(other_count$longitude, other_count$latitude,
+  pch = 4, col = "black", cex = 1)
+
+points(unknown_count$longitude, unknown_count$latitude,
+  pch = 4, col = "orange", cex = 1)
+
+
+
+
+
+
+
+
+```
