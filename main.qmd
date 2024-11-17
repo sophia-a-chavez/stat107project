@@ -62,7 +62,7 @@ pie(race_counts$count,
 
 FatalShootingsStats <- na.omit(FatalShootingsStats) # getting rid of rows with any NA values
 
-
+# basic stats dependent on year
 data_15 <- subset(FatalShootingsStats, FatalShootingsStats$year == 2015 )
 data_16 <- subset(FatalShootingsStats, FatalShootingsStats$year == 2016 )
 data_17 <- subset(FatalShootingsStats, FatalShootingsStats$year == 2017 )
@@ -71,7 +71,7 @@ data_19 <- subset(FatalShootingsStats, FatalShootingsStats$year == 2019 )
 data_20 <- subset(FatalShootingsStats, FatalShootingsStats$year == 2020 )
 data_21 <- subset(FatalShootingsStats, FatalShootingsStats$year == 2021 )
 data_22 <- subset(FatalShootingsStats, FatalShootingsStats$year == 2022 )
-# basic stats dependent on year
+
 total <- c(nrow(data_15), nrow(data_16), nrow(data_17), nrow(data_18), nrow(data_19), nrow(data_20), nrow(data_21), nrow(data_22) )
 
 average_age <- c(mean(data_15$age), mean(data_16$age), mean(data_17$age), mean(data_18$age), mean(data_19$age), mean(data_20$age), mean(data_21$age), mean(data_22$age))
@@ -82,10 +82,22 @@ bodycam_true <- c(sum(data_15$body_camera == "TRUE"), sum(data_16$body_camera ==
 
 bodycam_percent <- c((bodycam_true[1]/total[1]), (bodycam_true[2]/total[2]),(bodycam_true[3]/total[3]),(bodycam_true[4]/total[4]),(bodycam_true[5]/total[5]),(bodycam_true[6]/total[6]),(bodycam_true[7]/total[7]),(bodycam_true[8]/total[7]))
 
-year_stats <- data.frame(total, round(average_age, 1), bodycam_false, bodycam_true, bodycam_percent ) 
-names(year_stats) <- c("Total Fatal Shootings", "Average Age", "No Body Camera", "Yes Body Camera", "percent of yes body camera")
+### adding percent of shootings with armed 
+gun_armedp <- c((sum(data_15$armed == "gun") / total[1]), (sum(data_16$armed == "gun") / total[2]), (sum(data_17$armed == "gun") / total[3]), (sum(data_18$armed == "gun") / total[4]), (sum(data_19$armed == "gun") / total[5]), (sum(data_20$armed == "gun") / total[6]), (sum(data_21$armed == "gun") / total[7]), (sum(data_22$armed == "gun") / total[7]))
+
+unarmed_armedp <- c((sum(data_15$armed == "unarmed") / total[1]), (sum(data_16$armed == "unarmed") / total[2]), (sum(data_17$armed == "unarmed") / total[3]), (sum(data_18$armed == "unarmed") / total[4]), (sum(data_19$armed == "unarmed") / total[5]), (sum(data_20$armed == "unarmed") / total[6]), (sum(data_21$armed == "unarmed") / total[7]), (sum(data_22$armed == "unarmed") / total[7]))
+
+car_armedp <- c((sum(data_15$armed == "Vehicle") / total[1]), (sum(data_16$armed == "Vehicle") / total[2]), (sum(data_17$armed == "Vehicle") / total[3]), (sum(data_18$armed == "Vehicle") / total[4]), (sum(data_19$armed == "Vehicle") / total[5]), (sum(data_20$armed == "Vehicle") / total[6]), (sum(data_21$armed == "Vehicle") / total[7]), (sum(data_22$armed == "Vehicle") / total[7]))
+
+
+mental_illness <- c(sum(data_15$signs_of_mental_illness == "TRUE")/total[1], sum(data_16$signs_of_mental_illness == "TRUE")/total[2], sum(data_17$signs_of_mental_illness == "TRUE")/total[3], sum(data_18$signs_of_mental_illness == "TRUE")/total[4], sum(data_19$signs_of_mental_illness == "TRUE")/total[5], sum(data_20$signs_of_mental_illness == "TRUE")/total[6], sum(data_21$signs_of_mental_illness == "TRUE")/total[7], sum(data_22$signs_of_mental_illness == "TRUE")/total[8])
+
+year_stats <- data.frame(total, round(average_age, 1), bodycam_false, bodycam_true, bodycam_percent, gun_armedp, unarmed_armedp, car_armedp, mental_illness) 
+
+names(year_stats) <- c("Total Fatal Shootings", "Average Age", "No Body Camera", "Yes Body Camera", "percent of officers with  body camera", "percent of victims armed with gun", "percent of victims unarmed", "percent of victims armed with vehicle", "percent of victims with mental illness")
 rownames(year_stats) <- c("2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022")
 year_stats
+
 
 
 
@@ -107,4 +119,56 @@ data_18 <- subset(FatalShootingsStats, FatalShootingsStats$year >= 2015 )
 
 data_18
 
+```
+
+```{r}
+# Aggregate data by year and race_name
+race_year_counts <- aggregate(FatalShootingsStats$race_name, 
+                              by = list(Year = FatalShootingsStats$year, 
+                                        Race = FatalShootingsStats$race_name), 
+        
+                      FUN = length)
+
+# Rename the count column for clarity
+colnames(race_year_counts)[3] <- "Count"
+
+# Create a matrix to store counts for each race across years
+race_counts_matrix <- xtabs(Count ~ Race + Year, data = race_year_counts)
+
+# Set up colors for each race
+colors <- c("lightblue", "lightgreen", "lightcoral", "lightpink", "wheat", "lavender", "gray")
+
+# Create the bar plot
+barplot(race_counts_matrix, beside = TRUE, col = colors,
+        main = "Fatal Shootings by Race and Year",
+        xlab = "Year", ylab = "Number of Fatal Shootings", 
+        legend.text = rownames(race_counts_matrix), 
+        args.legend = list(x = "topright", inset = c(-0.05, 0)))
+
+```
+
+```{r}
+# Set up an empty plot with the correct axes limits
+plot(NULL, xlim = range(race_year_counts$Year), 
+     ylim = range(race_year_counts$Count), 
+     xlab = "Year", ylab = "Number of Fatal Shootings", 
+     main = "Fatal Shootings by Race Over the Years")
+
+# Define colors for each race
+race_colors <- c("blue", "green", "red", "purple", "orange", "pink", "gray")
+
+# Get unique races
+unique_races <- unique(race_year_counts$Race)
+
+# Loop through each race to plot its line on the graph
+for (i in 1:length(unique_races)) {
+  # Subset data for the current race
+  race_data <- subset(race_year_counts, Race == unique_races[i])
+  
+  # Plot the line for this race
+  lines(race_data$Year, race_data$Count, type = "o", col = race_colors[i], pch = 16)
+}
+
+# Add a legend
+legend("topright", legend = unique_races, col = race_colors, pch = 16, lty = 1)
 ```
