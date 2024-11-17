@@ -117,7 +117,7 @@ FatalShootingsStats$President <-ifelse(FatalShootingsStats$month >= 1 & FatalSho
 FatalShootingsStats$President <-ifelse((FatalShootingsStats$month >= 1 & FatalShootingsStats$day >=20 & FatalShootingsStats$year <=2016), FatalShootingsStats$President <-"Barack Obama", FatalShootingsStats$President <-"Donald Trump")
 data_18 <- subset(FatalShootingsStats, FatalShootingsStats$year >= 2015 )
 
-data_18
+head(data_18)
 
 ```
 
