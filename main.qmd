@@ -238,3 +238,79 @@ ggplot(FatalShootingsStats, aes(x = race_name, y = age, fill = AgeRange)) +
   scale_fill_brewer(palette = "Set2") + # Optional color palette
   theme_minimal() # Clean theme
 ```
+
+On May 25, 2020, George Floyd, a Black man living in Minneapolis, Minnesota was brutally killed by a Minneapolis police officer. This sparked a new peak in the Black Lives Matter (BLM) movement, where there was a new wave of both peaceful protests and riots. The peak of the BLM riots, vandalism, arson and looting occurred from May 26th to June 8th in 2020. During these 2 weeks, were fatal shootings higher than normal?
+
+```{r}
+# Convert the 'Date' column to Date type if it isn't already
+FatalShootingsStats$date <- as.Date(FatalShootingsStats$date, format = "%Y-%m-%d")  # Adjust format if needed
+
+# Specify the two specific dates you want to check
+date1 <- as.Date("2020-05-26")  # Example date 1
+date2 <- as.Date("2020-06-08")  # Example date 2
+
+# Filter data for those two dates and count the total number of shootings
+shootings_period <- FatalShootingsStats %>%
+  filter(date >= date1 & date <= date2)
+ 
+# Number of unique days in the time period
+unique_days_period <- length(seq.Date(date1, date2, by = "day"))
+
+# Total number of shootings in the time period
+total_shootings_period <- nrow(shootings_period)
+
+# Average shootings per day for the time period (including all days in the range)
+avg_shootings_per_day_period <- total_shootings_period / unique_days_period
+
+# 2. Calculate the average number of shootings per day for the entire dataset
+# Find the first and last dates in the dataset
+first_date <- min(FatalShootingsStats$date)
+last_date <- max(FatalShootingsStats$date)
+
+# Number of unique days in the entire dataset (including all days between the first and last date)
+unique_days_total <- length(seq.Date(first_date, last_date, by = "day"))
+
+# Total number of shootings in the entire dataset
+total_shootings_total <- nrow(FatalShootingsStats)
+
+# Average shootings per day for the entire dataset (including all days in the range)
+avg_shootings_per_day_total <- total_shootings_total / unique_days_total
+
+# Print the results
+cat("Average shootings per day for the period from May 26, 2020 to June 8, 2020 :", avg_shootings_per_day_period, "\n")
+cat("Average shootings per day for the entire dataset:", avg_shootings_per_day_total, "\n")
+```
+
+```{r}
+# Create a vector with the two averages
+average_shootings <- c(avg_shootings_per_day_period, avg_shootings_per_day_total)
+
+# Create a bar plot
+barplot(average_shootings, 
+        names.arg = c("peak BLM riots", "Entire Dataset"), 
+        main = "Comparison of Average Shootings per Day", 
+        ylab = "Average Shootings per Day", 
+        col = c("lightblue", "lightgreen"), 
+        border = "black")
+```
+
+```{r}
+library(maps)
+state_to_highlight <- "Minnesota"
+
+# Basic Map Plot
+map("state", col = "lightgray", fill = TRUE, bg = "white", lwd = 0.2)  # Draw USA map
+map("state", region = state_to_highlight, col = "lightblue", fill = TRUE, add = TRUE)
+
+# Overlay points for Los Angeles and Miami
+# Coordinates for Los Angeles
+points(-118.2437, 34.0522, col = "blue", pch = 19, cex = 2)  # Los Angeles
+
+# Optionally, add text labels for the cities
+text(-118.2437, 34.0522, "Los Angeles", pos = 3, col = "blue", cex = 1)
+
+# Overlay points (longitude, latitude) on the map
+points(shootings_period$longitude, shootings_period$latitude, col = "red", pch = 20, cex = 1.5)
+```
+
+As we can see, the average number of fatal shootings a day were slightly greater during the peak of the riots, vandalism, arson and looting after George Floyd's death. Surprisingly, none of the deaths occurred in Minneapolis, which was a hot spot for said BLM riots, but Los Angeles, which was also a hot spot, is shown to have a few deaths in it's area. So, while the average number of fatal shooting during the peak of the BLM riots period doesn't seem that much larger than the average number of fatal shootings in the entire data set, it doesn't tell the entire picture. If the average number of fatal shootings during the seven and a half years the data set encapsulates was the same as the average during the peak of the BLM riots, there would be an increase of 1,769 fatal shootings or 236 fatal shootings a year.
