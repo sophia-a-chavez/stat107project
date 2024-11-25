@@ -94,6 +94,7 @@ year_stats
 ```
 
 ```{r}
+#Bryan's Additions
 # adding colunm for current president -> is not currently working,  
 
 
@@ -110,23 +111,20 @@ data_18
 ```
 
 ```{r}
-# Aggregate data by year and race_name
+# aggregate data by year and race_name
 race_year_counts <- aggregate(FatalShootingsStats$race_name, 
                               by = list(Year = FatalShootingsStats$year, 
                                         Race = FatalShootingsStats$race_name), 
-        
                       FUN = length)
-
-# Rename the count column for clarity
 colnames(race_year_counts)[3] <- "Count"
 
-# Create a matrix to store counts for each race across years
+# create a matrix to store counts for each race across years
 race_counts_matrix <- xtabs(Count ~ Race + Year, data = race_year_counts)
 
-# Set up colors for each race
+# set up colors for each race
 colors <- c("lightblue", "lightgreen", "lightcoral", "lightpink", "wheat", "lavender", "gray")
 
-# Create the bar plot
+# creating bar plot
 barplot(race_counts_matrix, beside = TRUE, col = colors,
         main = "Fatal Shootings by Race and Year",
         xlab = "Year", ylab = "Number of Fatal Shootings", 
@@ -136,44 +134,42 @@ barplot(race_counts_matrix, beside = TRUE, col = colors,
 ```
 
 ```{r}
-# Set up an empty plot with the correct axes limits
+# set up an empty plot with the correct axes limits
 plot(NULL, xlim = range(race_year_counts$Year), 
      ylim = range(race_year_counts$Count), 
      xlab = "Year", ylab = "Number of Fatal Shootings", 
      main = "Fatal Shootings by Race Over the Years")
 
-# Define colors for each race
+# define colors for each race
 race_colors <- c("blue", "green", "red", "purple", "orange", "pink", "gray")
 
-# Get unique races
+# get unique races
 unique_races <- unique(race_year_counts$Race)
 
-# Loop through each race to plot its line on the graph
+# loop through each race to plot its line on the graph
 for (i in 1:length(unique_races)) {
   # Subset data for the current race
   race_data <- subset(race_year_counts, Race == unique_races[i])
   
-  # Plot the line for this race
+  # plot the line for this race
   lines(race_data$Year, race_data$Count, type = "o", col = race_colors[i], pch = 16)
 }
 
-# Add a legend
+# add a legend
 legend("topright", legend = unique_races, col = race_colors, pch = 16, lty = 1)
 ```
 
 ```{r}
-# Filter data to include only unarmed incidents
+# filtering data to include only unarmed incidents
 unarmed_data <- subset(FatalShootingsStats, FatalShootingsStats$armed == "unarmed")
 
-# Count unarmed fatalities by race
+# count unarmed fatalities by race
 unarmed_deaths_by_race <- aggregate(unarmed_data$armed, 
                                     by = list(Race = unarmed_data$race_name), 
                                     FUN = length)
-
-# Rename the count column for clarity
 colnames(unarmed_deaths_by_race)[2] <- "Unarmed_Deaths"
 
-# Display the counts
+# count display
 unarmed_deaths_by_race
 
 
@@ -181,10 +177,39 @@ unarmed_deaths_by_race
 ```
 
 ```{r}
-# Adjust margins to give more space to labels
+# count total fatalities by race
+total_deaths_by_race <- aggregate(FatalShootingsStats$armed, 
+                                  by = list(Race = FatalShootingsStats$race_name), 
+                                  FUN = length)
+
+# ensure all races are represented in unarmed deaths by race
+all_races <- unique(FatalShootingsStats$race_name)
+unarmed_deaths_by_race <- aggregate(unarmed_data$armed, 
+                                    by = list(Race = unarmed_data$race_name), 
+                                    FUN = length)
+unarmed_deaths_by_race <- merge(data.frame(Race = all_races), unarmed_deaths_by_race, 
+                                by = "Race", all.x = TRUE)
+unarmed_deaths_by_race[is.na(unarmed_deaths_by_race)] <- 0  # Replace NA with 0
+
+# merge total deaths and unarmed deaths
+race_unarmed_comparison <- merge(unarmed_deaths_by_race, total_deaths_by_race, 
+                                 by = "Race", 
+                                 suffixes = c("_Unarmed", "_Total"))
+
+# calculate percentage of unarmed fatalities for each race
+race_unarmed_comparison$Unarmed_Death_Percentage <- 
+  (race_unarmed_comparison$x_Unarmed / race_unarmed_comparison$x_Total) * 100
+
+# rename columns for clarity
+colnames(race_unarmed_comparison) <- c("Race", "Unarmed_Deaths", "Total_Deaths", "Unarmed_Death_Percentage")
+
+# display the updated data frame
+race_unarmed_comparison
+
+# adjust margins to give more space to labels
 par(mar = c(5, 10, 4, 2) + 0.1) # Increase left margin for y-axis labels
 
-# Create a horizontal bar plot without a y-axis label
+# create a horizontal bar plot without a y-axis label
 barplot(race_unarmed_comparison$Unarmed_Death_Percentage,
         names.arg = race_unarmed_comparison$Race,
         main = "Percentage of Unarmed Fatalities by Race",
@@ -194,7 +219,8 @@ barplot(race_unarmed_comparison$Unarmed_Death_Percentage,
         las = 1,            # Ensure labels are horizontal on y-axis
         cex.names = 0.9)    # Adjust label size if needed
 
-# Reset margins after plotting (optional if running multiple plots in sequence)
+# reset margins after plotting (optional if running multiple plots in sequence)
 par(mar = c(5, 4, 4, 2) + 0.1)
+
 
 ```
