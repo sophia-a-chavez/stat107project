@@ -14,6 +14,7 @@ and the reported fatal police shootings in the United States.
 
 ##### Intro ~
 - (introduce research topic)^^^
+Our group investigates the pattern and disparties of Fatal Police Shootings in the U.S which each member focusing on a specific aspect of the data to bring up meaningful correlations between the statistic on paper and the real world problem it presents. By leveraging the dataset, we aim to examine trends over time, assess the percentage of unarmed individuals among fatalities, and address essential demographic variables such as race and age.
 
 ##### Body ~
 - We found the average amount of shooting per year by race. What do the results mean?
