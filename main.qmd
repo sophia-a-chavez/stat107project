@@ -209,18 +209,17 @@ race_unarmed_comparison
 # adjust margins to give more space to labels
 par(mar = c(5, 10, 4, 2) + 0.1) # Increase left margin for y-axis labels
 
-# create a horizontal bar plot without a y-axis label
+# create a horizontal bar plot
 barplot(race_unarmed_comparison$Unarmed_Death_Percentage,
-        names.arg = race_unarmed_comparison$Race,
-        main = "Percentage of Unarmed Fatalities by Race",
-        xlab = "Percentage of Unarmed Fatalities",
-        col = "lightcoral",
-        horiz = TRUE,       # Horizontal bars
-        las = 1,            # Ensure labels are horizontal on y-axis
-        cex.names = 0.9)    # Adjust label size if needed
+names.arg = race_unarmed_comparison$Race,
+main = "Percentage of Unarmed Fatalities by Race",
+xlab = "Percentage of Unarmed Fatalities",
+col = "lightcoral",
+horiz = TRUE,       # Horizontal bars
+las = 1,            # Ensure labels are horizontal on y-axis
+cex.names = 0.9)    # Adjust label size if needed
 
 # reset margins after plotting (optional if running multiple plots in sequence)
 par(mar = c(5, 4, 4, 2) + 0.1)
-
 
 ```
