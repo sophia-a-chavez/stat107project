@@ -453,7 +453,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>other_count <span class="ot">&lt;-</span> <span class="fu">subset</span>(FatalShootingsStats, FatalShootingsStats<span class="sc">$</span>race_name <span class="sc">==</span> <span class="st">'Other'</span>)</span>
 <span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>unknown_count <span class="ot">&lt;-</span> <span class="fu">subset</span>(FatalShootingsStats, FatalShootingsStats<span class="sc">$</span>race_name <span class="sc">==</span> <span class="st">'Unknown'</span>)</span>
 <span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="fu">map</span>(<span class="st">"state"</span>)</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>maps<span class="sc">::</span><span class="fu">map</span>(<span class="st">"state"</span>)</span>
 <span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(asian_count<span class="sc">$</span>longitude, asian_count<span class="sc">$</span>latitude,</span>
 <span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">pch =</span> <span class="dv">4</span>, <span class="at">col =</span> <span class="st">"deeppink"</span>, <span class="at">cex =</span> <span class="dv">1</span>)</span>
 <span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a></span>
@@ -624,6 +624,148 @@ Attaching package: 'dplyr'</code></pre>
 </div>
 </div>
 <p>As we can see, the average number of fatal shootings a day were slightly greater during the peak of the riots, vandalism, arson and looting after George Floyd’s death. Surprisingly, none of the deaths occurred in Minneapolis, which was a hot spot for said BLM riots, but Los Angeles, which was also a hot spot, is shown to have a few deaths in it’s area. So, while the average number of fatal shooting during the peak of the BLM riots period doesn’t seem that much larger than the average number of fatal shootings in the entire data set, it doesn’t tell the entire picture. If the average number of fatal shootings during the seven and a half years the data set encapsulates was the same as the average during the peak of the BLM riots, there would be an increase of 1,769 fatal shootings or 236 fatal shootings a year.</p>
+<p><strong>Event 2: Covid-19 Lockdowns</strong></p>
+<p>On January 5th, 2020, the CDC’s National Center for Immunization and Respetoriy Diseases investigated the outbreak of a pneumonia-adjacent illness that was not responding to treatment, and by March 15th all but 7 U.S states shut down businesses, universities, and other large gatherings while urging people to stay in their homes to slow the spread. By analizing our original dataset with respect to enforced quarantine periods, we can identify possible correlations between social movement and fatal shootings.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(maps)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ lubridate 1.9.3     ✔ tibble    3.2.1
+✔ purrr     1.0.2     ✔ tidyr     1.3.1
+✔ readr     2.1.5     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+✖ purrr::map()    masks maps::map()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert the 'Date' column to Date type if it isn't already</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>FatalShootingsStats<span class="sc">$</span>date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(FatalShootingsStats<span class="sc">$</span>date, <span class="at">format =</span> <span class="st">"%Y-%m-%d"</span>)  </span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="co">#filtering data by covid lockdown timeline</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>during_date1 <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="st">"2020-03-15"</span>)  <span class="co"># main US lockdown start</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>during_date2 <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="st">"2021-05-01"</span>)  <span class="co"># need to find sorce for this date</span></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>during_covid <span class="ot">&lt;-</span> FatalShootingsStats <span class="sc">%&gt;%</span></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(date <span class="sc">&gt;=</span> during_date1 <span class="sc">&amp;</span> date <span class="sc">&lt;=</span> during_date2)</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>before_date1 <span class="ot">&lt;-</span> <span class="fu">min</span>(FatalShootingsStats<span class="sc">$</span>date)  </span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>before_date2 <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="st">"2020-03-14"</span>)</span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>before_covid <span class="ot">&lt;-</span> FatalShootingsStats <span class="sc">%&gt;%</span></span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(date <span class="sc">&gt;=</span> before_date1 <span class="sc">&amp;</span> date <span class="sc">&lt;=</span> before_date2)</span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a>after_date1 <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="st">"2021-05-01"</span>)  </span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a>after_date2 <span class="ot">&lt;-</span> <span class="fu">max</span>(FatalShootingsStats<span class="sc">$</span>date)</span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a>after_covid <span class="ot">&lt;-</span> FatalShootingsStats <span class="sc">%&gt;%</span></span>
+<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(date <span class="sc">&gt;=</span> after_date1 <span class="sc">&amp;</span> date <span class="sc">&lt;=</span> after_date2)</span>
+<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a><span class="co">#total number of shootings per time period</span></span>
+<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a>total_shootings_during <span class="ot">&lt;-</span> <span class="fu">nrow</span>(during_covid)</span>
+<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a>total_shootings_before <span class="ot">&lt;-</span> <span class="fu">nrow</span>(before_covid)</span>
+<span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a>total_shootings_after <span class="ot">&lt;-</span> <span class="fu">nrow</span>(after_covid)</span>
+<span id="cb33-27"><a href="#cb33-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-28"><a href="#cb33-28" aria-hidden="true" tabindex="-1"></a><span class="co">#total number of days in time period</span></span>
+<span id="cb33-29"><a href="#cb33-29" aria-hidden="true" tabindex="-1"></a>unique_days_during <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">seq.Date</span>(during_date1, during_date2, <span class="at">by =</span> <span class="st">"day"</span>))</span>
+<span id="cb33-30"><a href="#cb33-30" aria-hidden="true" tabindex="-1"></a>unique_days_before <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">seq.Date</span>(before_date1, before_date2, <span class="at">by =</span> <span class="st">"day"</span>))</span>
+<span id="cb33-31"><a href="#cb33-31" aria-hidden="true" tabindex="-1"></a>unique_days_after <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">seq.Date</span>(after_date1, after_date2, <span class="at">by =</span> <span class="st">"day"</span>))</span>
+<span id="cb33-32"><a href="#cb33-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-33"><a href="#cb33-33" aria-hidden="true" tabindex="-1"></a><span class="co">#shootings per day</span></span>
+<span id="cb33-34"><a href="#cb33-34" aria-hidden="true" tabindex="-1"></a>avg_shootings_during <span class="ot">&lt;-</span> total_shootings_during <span class="sc">/</span> unique_days_during</span>
+<span id="cb33-35"><a href="#cb33-35" aria-hidden="true" tabindex="-1"></a>avg_shootings_before <span class="ot">&lt;-</span> total_shootings_before <span class="sc">/</span> unique_days_before</span>
+<span id="cb33-36"><a href="#cb33-36" aria-hidden="true" tabindex="-1"></a>avg_shootings_after <span class="ot">&lt;-</span> total_shootings_after <span class="sc">/</span> unique_days_after</span>
+<span id="cb33-37"><a href="#cb33-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-38"><a href="#cb33-38" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Before the lockdowns: Total shootings "</span>,total_shootings_before,<span class="st">" Average shootings per day"</span>, avg_shootings_before, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Before the lockdowns: Total shootings  4734  Average shootings per day 2.492891 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"During the lockdowns: Total shootings "</span>,total_shootings_during,<span class="st">" Average shootings per day"</span>, avg_shootings_during, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>During the lockdowns: Total shootings  976  Average shootings per day 2.363196 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"After the lockdowns: Total shootings "</span>,total_shootings_after,<span class="st">" Average shootings per day"</span>, avg_shootings_after, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>After the lockdowns: Total shootings  694  Average shootings per day 1.684466 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co">#cat("Number of days in dataset before lockdowns ",unique_days_before,"\n", "Number of days in dataset during lockdowns ",unique_days_during,"\n","Number of days in dataset after lockdowns ",unique_days_after,"\n")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>state_to_highlight <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Arkansas"</span>, <span class="st">"Iowa"</span>, <span class="st">"Nebraska"</span>, <span class="st">"North Dakota"</span>, <span class="st">"South Dakota"</span>, <span class="st">"Utah"</span>, <span class="st">"Wyomming"</span>) <span class="co">#sates that never enforced lockdown</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Basic Map Plot</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>maps<span class="sc">::</span><span class="fu">map</span>(<span class="st">"state"</span>, <span class="at">col =</span> <span class="st">"lightgray"</span>, <span class="at">fill =</span> <span class="cn">TRUE</span>, <span class="at">bg =</span> <span class="st">"white"</span>, <span class="at">lwd =</span> <span class="fl">0.2</span>)  </span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>maps<span class="sc">::</span><span class="fu">map</span>(<span class="st">"state"</span>, <span class="at">region =</span> state_to_highlight, <span class="at">col =</span> <span class="st">"lightblue"</span>, <span class="at">fill =</span> <span class="cn">TRUE</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(before_covid<span class="sc">$</span>longitude, before_covid<span class="sc">$</span>latitude, <span class="at">col =</span> <span class="st">"black"</span>, <span class="at">pch =</span> <span class="dv">20</span>, <span class="at">cex =</span> <span class="fl">1.0</span>)</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"bottomright"</span>, <span class="at">legend =</span> <span class="st">"Fatal Shooting"</span>, <span class="at">pch =</span> <span class="dv">20</span>, <span class="at">col =</span> <span class="st">"black"</span>, <span class="at">cex =</span> <span class="fl">0.5</span>)</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"bottomleft"</span>, <span class="at">legend =</span> <span class="st">"No Manditory Lockdown"</span>, <span class="at">fill=</span> <span class="st">"lightblue"</span>, <span class="at">col =</span> <span class="st">"lightblue"</span>, <span class="at">cex =</span> <span class="dv">1</span>)</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span>(<span class="at">main=</span> <span class="st">"Before Covid-19 Lockdown"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="main_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>maps<span class="sc">::</span><span class="fu">map</span>(<span class="st">"state"</span>, <span class="at">col =</span> <span class="st">"lightgray"</span>, <span class="at">fill =</span> <span class="cn">TRUE</span>, <span class="at">bg =</span> <span class="st">"white"</span>, <span class="at">lwd =</span> <span class="fl">0.2</span>) </span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>maps<span class="sc">::</span><span class="fu">map</span>(<span class="st">"state"</span>, <span class="at">region =</span> state_to_highlight, <span class="at">col =</span> <span class="st">"lightblue"</span>, <span class="at">fill =</span> <span class="cn">TRUE</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(during_covid<span class="sc">$</span>longitude, during_covid<span class="sc">$</span>latitude, <span class="at">col =</span> <span class="st">"black"</span>, <span class="at">pch =</span> <span class="dv">20</span>, <span class="at">cex =</span> <span class="fl">1.0</span>)</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"bottomright"</span>, <span class="at">legend =</span> <span class="st">"Fatal Shooting"</span>, <span class="at">pch =</span> <span class="dv">20</span>, <span class="at">col =</span> <span class="st">"black"</span>, <span class="at">cex =</span> <span class="fl">0.5</span>)</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"bottomleft"</span>, <span class="at">legend =</span> <span class="st">"No Manditory Lockdown"</span>, <span class="at">fill=</span> <span class="st">"lightblue"</span>, <span class="at">col =</span> <span class="st">"lightblue"</span>, <span class="at">cex =</span> <span class="dv">1</span>)</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span>(<span class="at">main=</span> <span class="st">"During Covid-19 Lockdown"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="main_files/figure-html/unnamed-chunk-16-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>maps<span class="sc">::</span><span class="fu">map</span>(<span class="st">"state"</span>, <span class="at">col =</span> <span class="st">"lightgray"</span>, <span class="at">fill =</span> <span class="cn">TRUE</span>, <span class="at">bg =</span> <span class="st">"white"</span>, <span class="at">lwd =</span> <span class="fl">0.2</span>)  </span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>maps<span class="sc">::</span><span class="fu">map</span>(<span class="st">"state"</span>, <span class="at">region =</span> state_to_highlight, <span class="at">col =</span> <span class="st">"lightblue"</span>, <span class="at">fill =</span> <span class="cn">TRUE</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(after_covid<span class="sc">$</span>longitude, after_covid<span class="sc">$</span>latitude, <span class="at">col =</span> <span class="st">"black"</span>, <span class="at">pch =</span> <span class="dv">20</span>, <span class="at">cex =</span> <span class="fl">1.0</span>)</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"bottomright"</span>, <span class="at">legend =</span> <span class="st">"Fatal Shooting"</span>, <span class="at">pch =</span> <span class="dv">20</span>, <span class="at">col =</span> <span class="st">"black"</span>, <span class="at">cex =</span> <span class="fl">0.7</span>)</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"bottomleft"</span>, <span class="at">legend =</span> <span class="st">"No Manditory Lockdown"</span>, <span class="at">fill=</span> <span class="st">"lightblue"</span>, <span class="at">col =</span> <span class="st">"lightblue"</span>, <span class="at">cex =</span> <span class="dv">1</span>)</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span>( <span class="st">"After Covid-19 Lockdown"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="main_files/figure-html/unnamed-chunk-16-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co">#"Arkansas", "Iowa", "Nebraska", "North Dakota", "South Dakota", "Utah", "Wyomming"</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Arkansas data </span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>before_ar <span class="ot">&lt;-</span> before_covid <span class="sc">%&gt;%</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(before_covid<span class="sc">$</span>state <span class="sc">==</span> <span class="st">"AR"</span> <span class="sc">|</span> before_covid<span class="sc">$</span>state <span class="sc">==</span> <span class="st">"IA"</span> <span class="sc">|</span> before_covid<span class="sc">$</span>state <span class="sc">==</span> <span class="st">"NE"</span> <span class="sc">|</span> before_covid<span class="sc">$</span>state <span class="sc">==</span> <span class="st">"ND"</span> <span class="sc">|</span> before_covid<span class="sc">$</span>state <span class="sc">==</span> <span class="st">"SD"</span> <span class="sc">|</span> before_covid<span class="sc">$</span>state <span class="sc">==</span> <span class="st">"UT"</span> <span class="sc">|</span> before_covid<span class="sc">$</span>state <span class="sc">==</span> <span class="st">"WY"</span> )</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>during_ar <span class="ot">&lt;-</span> before_covid <span class="sc">%&gt;%</span></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(before_covid<span class="sc">$</span>state <span class="sc">==</span> <span class="st">"AR"</span> <span class="sc">|</span> before_covid<span class="sc">$</span>state <span class="sc">==</span> <span class="st">"IA"</span> <span class="sc">|</span> before_covid<span class="sc">$</span>state <span class="sc">==</span> <span class="st">"NE"</span> <span class="sc">|</span> before_covid<span class="sc">$</span>state <span class="sc">==</span> <span class="st">"ND"</span> <span class="sc">|</span> before_covid<span class="sc">$</span>state <span class="sc">==</span> <span class="st">"SD"</span> <span class="sc">|</span> before_covid<span class="sc">$</span>state <span class="sc">==</span> <span class="st">"UT"</span> <span class="sc">|</span> before_covid<span class="sc">$</span>state <span class="sc">==</span> <span class="st">"WY"</span> )</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>after_ar <span class="ot">&lt;-</span> before_covid <span class="sc">%&gt;%</span></span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(before_covid<span class="sc">$</span>state <span class="sc">==</span> <span class="st">"AR"</span> <span class="sc">|</span> before_covid<span class="sc">$</span>state <span class="sc">==</span> <span class="st">"IA"</span> <span class="sc">|</span> before_covid<span class="sc">$</span>state <span class="sc">==</span> <span class="st">"NE"</span> <span class="sc">|</span> before_covid<span class="sc">$</span>state <span class="sc">==</span> <span class="st">"ND"</span> <span class="sc">|</span> before_covid<span class="sc">$</span>state <span class="sc">==</span> <span class="st">"SD"</span> <span class="sc">|</span> before_covid<span class="sc">$</span>state <span class="sc">==</span> <span class="st">"UT"</span> <span class="sc">|</span> before_covid<span class="sc">$</span>state <span class="sc">==</span> <span class="st">"WY"</span> )</span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a><span class="co">#total number of shootings per time period</span></span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>total_shootings_Bar <span class="ot">&lt;-</span> <span class="fu">nrow</span>(during_ar)</span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a>total_shootings_Dar <span class="ot">&lt;-</span> <span class="fu">nrow</span>(before_ar)</span>
+<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a>total_shootings_Aar <span class="ot">&lt;-</span> <span class="fu">nrow</span>(after_ar)</span>
+<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-16"><a href="#cb43-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-17"><a href="#cb43-17" aria-hidden="true" tabindex="-1"></a><span class="co">#shootings per day</span></span>
+<span id="cb43-18"><a href="#cb43-18" aria-hidden="true" tabindex="-1"></a>avg_shootings_during <span class="ot">&lt;-</span> total_shootings_Dar <span class="sc">/</span> unique_days_during</span>
+<span id="cb43-19"><a href="#cb43-19" aria-hidden="true" tabindex="-1"></a>avg_shootings_before <span class="ot">&lt;-</span> total_shootings_Bar <span class="sc">/</span> unique_days_before</span>
+<span id="cb43-20"><a href="#cb43-20" aria-hidden="true" tabindex="-1"></a>avg_shootings_after <span class="ot">&lt;-</span> total_shootings_Aar <span class="sc">/</span> unique_days_after</span>
+<span id="cb43-21"><a href="#cb43-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-22"><a href="#cb43-22" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Shootings per day in states with no enforced lockdowns"</span>,avg_shootings_during,<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>,  <span class="st">"Shootings per day in states with no enforced lockdowns"</span>,avg_shootings_before,<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>, <span class="st">"Shootings per day in  states with no enforced lockdowns"</span>,avg_shootings_after)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Shootings per day in states with no enforced lockdowns 0.4794189 
+ Shootings per day in states with no enforced lockdowns 0.1042654 
+ Shootings per day in  states with no enforced lockdowns 0.4805825</code></pre>
+</div>
+</div>
 </section>
 
 </main>
