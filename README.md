@@ -28,6 +28,7 @@ Our group investigates the pattern and disparties of Fatal Police Shootings in t
 
 -   We found the average amount of shooting per year by race. What do the results mean?
 
+<<<<<<< HEAD
 -   Key Findings ~
 -   Demographic trends: Proportionally, white people were more likely to be in fatal shootings in 2015. Followed by Black people and Hispanic people respectively.
 -   The total amount of fatal shootings decreased during the span of 2015 to 2022 (from a high 986 and dropping to 280).
@@ -37,6 +38,24 @@ Our group investigates the pattern and disparties of Fatal Police Shootings in t
 
 -   Infer ~
 -   **Review the key political events and social movements that shaped the United States from 2015 to 2022 (Black Lives Matter, Blue Lives Matter, elections, George Floyd, etc.)
+=======
+-   Key Findings \~
+
+-   Demographic trends: Proportionally, white people were more likely to be in fatal shootings in 2015. Followed by Black people and Hispanic people respectively.
+
+-   The total amount of fatal shootings decreased during the span of 2015 to 2022 (from a high 986 and dropping to 280).
+
+-   The average ages of victims in fatal shootings were mostly consistent throughout this time, with an average range of 36.6 to 38.1 years old.
+
+-   It seems that the total number of fatal shootings were much higher without the presense of body cameras.
+
+-   
+
+-   Infer \~
+
+-   \*\*Review the key political events and social movements that shaped the United States from 2015 to 2022 (Black Lives Matter, Blue Lives Matter, elections, George Floyd, etc.)
+
+>>>>>>> b4bca1da74b6501ac3153c0bca3191ec5b65a216
 -   If we focus on the Black Lives Matter movement, which was most active from summer 2016 to summer 2020, ???
 
 ##### Conclusion \~
