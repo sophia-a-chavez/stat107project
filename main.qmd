@@ -106,6 +106,7 @@ year_stats
 ```
 
 ```{r}
+#Bryan's Additions
 # adding colunm for current president -> is not currently working,  
 
 
@@ -117,28 +118,25 @@ FatalShootingsStats$President <-ifelse(FatalShootingsStats$month >= 1 & FatalSho
 FatalShootingsStats$President <-ifelse((FatalShootingsStats$month >= 1 & FatalShootingsStats$day >=20 & FatalShootingsStats$year <=2016), FatalShootingsStats$President <-"Barack Obama", FatalShootingsStats$President <-"Donald Trump")
 data_18 <- subset(FatalShootingsStats, FatalShootingsStats$year >= 2015 )
 
-data_18
+head(data_18)
 
 ```
 
 ```{r}
-# Aggregate data by year and race_name
+# aggregate data by year and race_name
 race_year_counts <- aggregate(FatalShootingsStats$race_name, 
                               by = list(Year = FatalShootingsStats$year, 
                                         Race = FatalShootingsStats$race_name), 
-        
                       FUN = length)
-
-# Rename the count column for clarity
 colnames(race_year_counts)[3] <- "Count"
 
-# Create a matrix to store counts for each race across years
+# create a matrix to store counts for each race across years
 race_counts_matrix <- xtabs(Count ~ Race + Year, data = race_year_counts)
 
-# Set up colors for each race
+# set up colors for each race
 colors <- c("lightblue", "lightgreen", "lightcoral", "lightpink", "wheat", "lavender", "gray")
 
-# Create the bar plot
+# creating bar plot
 barplot(race_counts_matrix, beside = TRUE, col = colors,
         main = "Fatal Shootings by Race and Year",
         xlab = "Year", ylab = "Number of Fatal Shootings", 
@@ -148,29 +146,94 @@ barplot(race_counts_matrix, beside = TRUE, col = colors,
 ```
 
 ```{r}
-# Set up an empty plot with the correct axes limits
+# set up an empty plot with the correct axes limits
 plot(NULL, xlim = range(race_year_counts$Year), 
      ylim = range(race_year_counts$Count), 
      xlab = "Year", ylab = "Number of Fatal Shootings", 
      main = "Fatal Shootings by Race Over the Years")
 
-# Define colors for each race
+# define colors for each race
 race_colors <- c("blue", "green", "red", "purple", "orange", "pink", "gray")
 
-# Get unique races
+# get unique races
 unique_races <- unique(race_year_counts$Race)
 
-# Loop through each race to plot its line on the graph
+# loop through each race to plot its line on the graph
 for (i in 1:length(unique_races)) {
   # Subset data for the current race
   race_data <- subset(race_year_counts, Race == unique_races[i])
   
-  # Plot the line for this race
+  # plot the line for this race
   lines(race_data$Year, race_data$Count, type = "o", col = race_colors[i], pch = 16)
 }
 
-# Add a legend
+# add a legend
 legend("topright", legend = unique_races, col = race_colors, pch = 16, lty = 1)
+```
+
+```{r}
+# filtering data to include only unarmed incidents
+unarmed_data <- subset(FatalShootingsStats, FatalShootingsStats$armed == "unarmed")
+
+# count unarmed fatalities by race
+unarmed_deaths_by_race <- aggregate(unarmed_data$armed, 
+                                    by = list(Race = unarmed_data$race_name), 
+                                    FUN = length)
+colnames(unarmed_deaths_by_race)[2] <- "Unarmed_Deaths"
+
+# count display
+unarmed_deaths_by_race
+
+
+
+```
+
+```{r}
+# count total fatalities by race
+total_deaths_by_race <- aggregate(FatalShootingsStats$armed, 
+                                  by = list(Race = FatalShootingsStats$race_name), 
+                                  FUN = length)
+
+# ensure all races are represented in unarmed deaths by race
+all_races <- unique(FatalShootingsStats$race_name)
+unarmed_deaths_by_race <- aggregate(unarmed_data$armed, 
+                                    by = list(Race = unarmed_data$race_name), 
+                                    FUN = length)
+unarmed_deaths_by_race <- merge(data.frame(Race = all_races), unarmed_deaths_by_race, 
+                                by = "Race", all.x = TRUE)
+unarmed_deaths_by_race[is.na(unarmed_deaths_by_race)] <- 0  # Replace NA with 0
+
+# merge total deaths and unarmed deaths
+race_unarmed_comparison <- merge(unarmed_deaths_by_race, total_deaths_by_race, 
+                                 by = "Race", 
+                                 suffixes = c("_Unarmed", "_Total"))
+
+# calculate percentage of unarmed fatalities for each race
+race_unarmed_comparison$Unarmed_Death_Percentage <- 
+  (race_unarmed_comparison$x_Unarmed / race_unarmed_comparison$x_Total) * 100
+
+# rename columns for clarity
+colnames(race_unarmed_comparison) <- c("Race", "Unarmed_Deaths", "Total_Deaths", "Unarmed_Death_Percentage")
+
+# display the updated data frame
+race_unarmed_comparison
+
+# adjust margins to give more space to labels
+par(mar = c(5, 10, 4, 2) + 0.1) # Increase left margin for y-axis labels
+
+# create a horizontal bar plot
+barplot(race_unarmed_comparison$Unarmed_Death_Percentage,
+names.arg = race_unarmed_comparison$Race,
+main = "Percentage of Unarmed Fatalities by Race",
+xlab = "Percentage of Unarmed Fatalities",
+col = "lightcoral",
+horiz = TRUE,       # Horizontal bars
+las = 1,            # Ensure labels are horizontal on y-axis
+cex.names = 0.9)    # Adjust label size if needed
+
+# reset margins after plotting (optional if running multiple plots in sequence)
+par(mar = c(5, 4, 4, 2) + 0.1)
+
 ```
 
 ```{r}
@@ -185,7 +248,7 @@ native_count <-subset(FatalShootingsStats, FatalShootingsStats$race_name =='Nati
 other_count <- subset(FatalShootingsStats, FatalShootingsStats$race_name == 'Other')
 unknown_count <- subset(FatalShootingsStats, FatalShootingsStats$race_name == 'Unknown')
 
-map("state")
+maps::map("state")
 points(asian_count$longitude, asian_count$latitude,
   pch = 4, col = "deeppink", cex = 1)
 
@@ -207,14 +270,122 @@ points(other_count$longitude, other_count$latitude,
 points(unknown_count$longitude, unknown_count$latitude,
   pch = 4, col = "orange", cex = 1)
 
+```
 
+```{r}
+library(dplyr)
+library(ggplot2)
 
+FatalShootingsStats$age <- as.numeric(as.character(FatalShootingsStats$age))
 
+# Create AgeRange dynamically
+FatalShootingsStats$AgeRange <- cut(
+  FatalShootingsStats$age,
+  breaks = c(0, 18, 35, Inf), # Define age range intervals
+  labels = c("0-18", "19-35", "36+"),
+  right = FALSE # Makes intervals inclusive on the left
+)
 
+# Summarize data to count individuals by Race and AgeRange
+summary_data <- FatalShootingsStats %>%
+  group_by(race, AgeRange) %>%
+  summarise(Count = n(), .groups = "drop")
 
-
+# Create the bar plot
+ggplot(FatalShootingsStats, aes(x = race_name, y = age, fill = AgeRange)) +
+  geom_bar(stat = "identity", position = "dodge") + # Position bars side by side
+  labs(
+    title = "Bar Plot of Races by Age Range",
+    x = "Race",
+    y = "Count"
+  ) +
+  scale_fill_brewer(palette = "Set2") + # Optional color palette
+  theme_minimal() # Clean theme
 
 ```
+
+On May 25, 2020, George Floyd, a Black man living in Minneapolis, Minnesota was brutally killed by a Minneapolis police officer. This sparked a new peak in the Black Lives Matter (BLM) movement, where there was a new wave of both peaceful protests and riots. The peak of the BLM riots, vandalism, arson and looting occurred from May 26th to June 8th in 2020. During these 2 weeks, were fatal shootings higher than normal?
+
+```{r}
+# Convert the 'Date' column to Date type if it isn't already
+FatalShootingsStats$date <- as.Date(FatalShootingsStats$date, format = "%Y-%m-%d")  # Adjust format if needed
+
+# Specify the two specific dates you want to check
+date1 <- as.Date("2020-05-26")  # Example date 1
+date2 <- as.Date("2020-06-08")  # Example date 2
+
+# Filter data for those two dates and count the total number of shootings
+shootings_period <- FatalShootingsStats %>%
+  filter(date >= date1 & date <= date2)
+ 
+# Number of unique days in the time period
+unique_days_period <- length(seq.Date(date1, date2, by = "day"))
+
+# Total number of shootings in the time period
+total_shootings_period <- nrow(shootings_period)
+
+# Average shootings per day for the time period (including all days in the range)
+avg_shootings_per_day_period <- total_shootings_period / unique_days_period
+
+# 2. Calculate the average number of shootings per day for the entire dataset
+# Find the first and last dates in the dataset
+first_date <- min(FatalShootingsStats$date)
+last_date <- max(FatalShootingsStats$date)
+
+# Number of unique days in the entire dataset (including all days between the first and last date)
+unique_days_total <- length(seq.Date(first_date, last_date, by = "day"))
+
+# Total number of shootings in the entire dataset
+total_shootings_total <- nrow(FatalShootingsStats)
+
+# Average shootings per day for the entire dataset (including all days in the range)
+avg_shootings_per_day_total <- total_shootings_total / unique_days_total
+
+# Print the results
+cat("Average shootings per day for the period from May 26, 2020 to June 8, 2020 :", avg_shootings_per_day_period, "\n")
+cat("Average shootings per day for the entire dataset:", avg_shootings_per_day_total, "\n")
+
+```
+
+```{r}
+# Create a vector with the two averages
+average_shootings <- c(avg_shootings_per_day_period, avg_shootings_per_day_total)
+
+# Create a bar plot
+barplot(average_shootings, 
+        names.arg = c("peak BLM riots", "Entire Dataset"), 
+        main = "Comparison of Average Shootings per Day", 
+        ylab = "Average Shootings per Day", 
+        col = c("lightblue", "lightgreen"), 
+        border = "black")
+
+```
+
+```{r}
+library(maps)
+state_to_highlight <- "Minnesota"
+
+# Basic Map Plot
+map("state", col = "lightgray", fill = TRUE, bg = "white", lwd = 0.2)  # Draw USA map
+map("state", region = state_to_highlight, col = "lightblue", fill = TRUE, add = TRUE)
+
+# Overlay points for Los Angeles and Miami
+# Coordinates for Los Angeles
+points(-118.2437, 34.0522, col = "blue", pch = 19, cex = 2)  # Los Angeles
+
+# Optionally, add text labels for the cities
+text(-118.2437, 34.0522, "Los Angeles", pos = 3, col = "blue", cex = 1)
+
+# Overlay points (longitude, latitude) on the map
+points(shootings_period$longitude, shootings_period$latitude, col = "red", pch = 20, cex = 1.5)
+
+```
+
+As we can see, the average number of fatal shootings a day were slightly greater during the peak of the riots, vandalism, arson and looting after George Floyd's death. Surprisingly, none of the deaths occurred in Minneapolis, which was a hot spot for said BLM riots, but Los Angeles, which was also a hot spot, is shown to have a few deaths in it's area. So, while the average number of fatal shooting during the peak of the BLM riots period doesn't seem that much larger than the average number of fatal shootings in the entire data set, it doesn't tell the entire picture. If the average number of fatal shootings during the seven and a half years the data set encapsulates was the same as the average during the peak of the BLM riots, there would be an increase of 1,769 fatal shootings or 236 fatal shootings a year.
+
+**Event 2: Covid-19 Lockdowns**
+
+On January 5th, 2020, the CDC’s National Center for Immunization and Respetoriy Diseases investigated the outbreak of a pneumonia-adjacent illness that was not responding to treatment, and by March 15th all but 7 U.S states shut down businesses, universities, and other large gatherings while urging people to stay in their homes to slow the spread. By analizing our original dataset with respect to enforced quarantine periods, we can identify possible correlations between social movement and fatal shootings.
 
 ```{r}
 library(maps)
