@@ -248,7 +248,7 @@ native_count <-subset(FatalShootingsStats, FatalShootingsStats$race_name =='Nati
 other_count <- subset(FatalShootingsStats, FatalShootingsStats$race_name == 'Other')
 unknown_count <- subset(FatalShootingsStats, FatalShootingsStats$race_name == 'Unknown')
 
-map("state")
+maps::map("state")
 points(asian_count$longitude, asian_count$latitude,
   pch = 4, col = "deeppink", cex = 1)
 
@@ -305,6 +305,9 @@ ggplot(FatalShootingsStats, aes(x = race_name, y = age, fill = AgeRange)) +
 ```
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> db5b057f829cc34f1b72d7496fd06200f92af55a
 On May 25, 2020, George Floyd, a Black man living in Minneapolis, Minnesota was brutally killed by a Minneapolis police officer. This sparked a new peak in the Black Lives Matter (BLM) movement, where there was a new wave of both peaceful protests and riots. The peak of the BLM riots, vandalism, arson and looting occurred from May 26th to June 8th in 2020. During these 2 weeks, were fatal shootings higher than normal?
 
 ```{r}
@@ -359,7 +362,39 @@ barplot(average_shootings,
         ylab = "Average Shootings per Day", 
         col = c("lightblue", "lightgreen"), 
         border = "black")
+<<<<<<< HEAD
 =======
+=======
+
+```
+
+```{r}
+library(maps)
+state_to_highlight <- "Minnesota"
+
+# Basic Map Plot
+map("state", col = "lightgray", fill = TRUE, bg = "white", lwd = 0.2)  # Draw USA map
+map("state", region = state_to_highlight, col = "lightblue", fill = TRUE, add = TRUE)
+
+# Overlay points for Los Angeles and Miami
+# Coordinates for Los Angeles
+points(-118.2437, 34.0522, col = "blue", pch = 19, cex = 2)  # Los Angeles
+
+# Optionally, add text labels for the cities
+text(-118.2437, 34.0522, "Los Angeles", pos = 3, col = "blue", cex = 1)
+
+# Overlay points (longitude, latitude) on the map
+points(shootings_period$longitude, shootings_period$latitude, col = "red", pch = 20, cex = 1.5)
+
+```
+
+As we can see, the average number of fatal shootings a day were slightly greater during the peak of the riots, vandalism, arson and looting after George Floyd's death. Surprisingly, none of the deaths occurred in Minneapolis, which was a hot spot for said BLM riots, but Los Angeles, which was also a hot spot, is shown to have a few deaths in it's area. So, while the average number of fatal shooting during the peak of the BLM riots period doesn't seem that much larger than the average number of fatal shootings in the entire data set, it doesn't tell the entire picture. If the average number of fatal shootings during the seven and a half years the data set encapsulates was the same as the average during the peak of the BLM riots, there would be an increase of 1,769 fatal shootings or 236 fatal shootings a year.
+
+**Event 2: Covid-19 Lockdowns**
+
+On January 5th, 2020, the CDC’s National Center for Immunization and Respetoriy Diseases investigated the outbreak of a pneumonia-adjacent illness that was not responding to treatment, and by March 15th all but 7 U.S states shut down businesses, universities, and other large gatherings while urging people to stay in their homes to slow the spread. By analizing our original dataset with respect to enforced quarantine periods, we can identify possible correlations between social movement and fatal shootings.
+
+>>>>>>> db5b057f829cc34f1b72d7496fd06200f92af55a
 ```{r}
 library(maps)
 
