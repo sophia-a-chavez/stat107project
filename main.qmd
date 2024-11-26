@@ -215,3 +215,105 @@ points(unknown_count$longitude, unknown_count$latitude,
 
 
 ```
+
+```{r}
+library(maps)
+
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+
+# Convert the 'Date' column to Date type if it isn't already
+FatalShootingsStats$date <- as.Date(FatalShootingsStats$date, format = "%Y-%m-%d")  
+
+#filtering data by covid lockdown timeline
+during_date1 <- as.Date("2020-03-15")  # main US lockdown start
+during_date2 <- as.Date("2021-05-01")  # need to find sorce for this date
+during_covid <- FatalShootingsStats %>%
+  filter(date >= during_date1 & date <= during_date2)
+
+before_date1 <- min(FatalShootingsStats$date)  
+before_date2 <- as.Date("2020-03-14")
+before_covid <- FatalShootingsStats %>%
+  filter(date >= before_date1 & date <= before_date2)
+
+after_date1 <- as.Date("2021-05-01")  
+after_date2 <- max(FatalShootingsStats$date)
+after_covid <- FatalShootingsStats %>%
+  filter(date >= after_date1 & date <= after_date2)
+
+#total number of shootings per time period
+total_shootings_during <- nrow(during_covid)
+total_shootings_before <- nrow(before_covid)
+total_shootings_after <- nrow(after_covid)
+
+#total number of days in time period
+unique_days_during <- length(seq.Date(during_date1, during_date2, by = "day"))
+unique_days_before <- length(seq.Date(before_date1, before_date2, by = "day"))
+unique_days_after <- length(seq.Date(after_date1, after_date2, by = "day"))
+
+#shootings per day
+avg_shootings_during <- total_shootings_during / unique_days_during
+avg_shootings_before <- total_shootings_before / unique_days_before
+avg_shootings_after <- total_shootings_after / unique_days_after
+
+cat("Before the lockdowns: Total shootings ",total_shootings_before," Average shootings per day", avg_shootings_before, "\n")
+cat("During the lockdowns: Total shootings ",total_shootings_during," Average shootings per day", avg_shootings_during, "\n")
+cat("After the lockdowns: Total shootings ",total_shootings_after," Average shootings per day", avg_shootings_after, "\n")
+#cat("Number of days in dataset before lockdowns ",unique_days_before,"\n", "Number of days in dataset during lockdowns ",unique_days_during,"\n","Number of days in dataset after lockdowns ",unique_days_after,"\n")
+
+```
+
+```{r}
+library(maps)
+state_to_highlight <- c("Arkansas", "Iowa", "Nebraska", "North Dakota", "South Dakota", "Utah", "Wyomming") #sates that never enforced lockdown
+# Basic Map Plot
+
+maps::map("state", col = "lightgray", fill = TRUE, bg = "white", lwd = 0.2)  
+maps::map("state", region = state_to_highlight, col = "lightblue", fill = TRUE, add = TRUE)
+points(before_covid$longitude, before_covid$latitude, col = "black", pch = 20, cex = 1.0)
+legend("bottomright", legend = "Fatal Shooting", pch = 20, col = "black", cex = 0.5)
+legend("bottomleft", legend = "No Manditory Lockdown", fill= "lightblue", col = "lightblue", cex = 1)
+title(main= "Before Covid-19 Lockdown")
+
+maps::map("state", col = "lightgray", fill = TRUE, bg = "white", lwd = 0.2) 
+maps::map("state", region = state_to_highlight, col = "lightblue", fill = TRUE, add = TRUE)
+points(during_covid$longitude, during_covid$latitude, col = "black", pch = 20, cex = 1.0)
+legend("bottomright", legend = "Fatal Shooting", pch = 20, col = "black", cex = 0.5)
+legend("bottomleft", legend = "No Manditory Lockdown", fill= "lightblue", col = "lightblue", cex = 1)
+title(main= "During Covid-19 Lockdown")
+
+maps::map("state", col = "lightgray", fill = TRUE, bg = "white", lwd = 0.2)  
+maps::map("state", region = state_to_highlight, col = "lightblue", fill = TRUE, add = TRUE)
+points(after_covid$longitude, after_covid$latitude, col = "black", pch = 20, cex = 1.0)
+legend("bottomright", legend = "Fatal Shooting", pch = 20, col = "black", cex = 0.7)
+legend("bottomleft", legend = "No Manditory Lockdown", fill= "lightblue", col = "lightblue", cex = 1)
+title( "After Covid-19 Lockdown")
+
+```
+
+```{r}
+#"Arkansas", "Iowa", "Nebraska", "North Dakota", "South Dakota", "Utah", "Wyomming"
+## Arkansas data 
+before_ar <- before_covid %>%
+  filter(before_covid$state == "AR" | before_covid$state == "IA" | before_covid$state == "NE" | before_covid$state == "ND" | before_covid$state == "SD" | before_covid$state == "UT" | before_covid$state == "WY" )
+during_ar <- before_covid %>%
+  filter(before_covid$state == "AR" | before_covid$state == "IA" | before_covid$state == "NE" | before_covid$state == "ND" | before_covid$state == "SD" | before_covid$state == "UT" | before_covid$state == "WY" )
+after_ar <- before_covid %>%
+  filter(before_covid$state == "AR" | before_covid$state == "IA" | before_covid$state == "NE" | before_covid$state == "ND" | before_covid$state == "SD" | before_covid$state == "UT" | before_covid$state == "WY" )
+
+
+#total number of shootings per time period
+total_shootings_Bar <- nrow(during_ar)
+total_shootings_Dar <- nrow(before_ar)
+total_shootings_Aar <- nrow(after_ar)
+
+
+#shootings per day
+avg_shootings_during <- total_shootings_Dar / unique_days_during
+avg_shootings_before <- total_shootings_Bar / unique_days_before
+avg_shootings_after <- total_shootings_Aar / unique_days_after
+
+cat("Shootings per day in states with no enforced lockdowns",avg_shootings_during,"\n",  "Shootings per day in states with no enforced lockdowns",avg_shootings_before,"\n", "Shootings per day in  states with no enforced lockdowns",avg_shootings_after)
+
+```
