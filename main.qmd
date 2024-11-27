@@ -548,13 +548,36 @@ BLM_Covid <- data.frame(avg_shootings, round(average_age, 1), bodycam_percent, g
 names(BLM_Covid) <- c("Average Fatal Shootings Per Day", "Average Age", "Percent of officers with turned on body camera", "Armed (gun)", "Unarmed", "Armed (car)", "Signs of mental illness")
 rownames(BLM_Covid) <- c("BLM", "Covid-19", "Entire Dataset")
 BLM_Covid
+```
 
-BLM_race_count<- shootings_period %>%
-  group_by(race_name) %>%
-  summarise(PriceMean = nrow(race_name))
-BLM_race_count
+```{r}
+# showing interesting data points
+time_period <- c("BLM", "COVID", "Entire Database")
+colors <- c("lightblue", "lightgreen", "lightcoral")
+barplot(BLM_Covid$`Average Fatal Shootings Per Day`, 
+        col = colors,
+        main = "Average Fatal Shootings Per Day",
+        xlab = "Time Period", )
+legend("topright", legend = time_period , col = colors, pch = 16 ) #TO FIX make sure legend is not on top of figure
+#armed (gun)
+time_period <- c("BLM", "COVID", "Entire Database")
+colors <- c("lightblue", "lightgreen", "lightcoral")
+barplot(BLM_Covid$`Armed (gun)`, 
+        col = colors,
+        main = "Percent of shooting victims Armed(GUN) ",
+        xlab = "Time Period", )
+legend("topright", legend = time_period , col = colors, pch = 16 ) #TO FIX make sure legend is not on top of figure
+#
+time_period <- c("BLM", "COVID", "Entire Database")
+colors <- c("lightblue", "lightgreen", "lightcoral")
+barplot(BLM_Covid$`Percent of officers with turned on body camera`, 
+        col = colors,
+        main = "Percent of officers with turned on body camera",
+        xlab = "Time Period", )
+legend("topright", legend = time_period , col = colors, pch = 16 ) #TO FIX make sure legend is not on top of figure
 
 ```
+
 ```{r}
 #entire data
 # aggregate data by year and race_name
@@ -571,9 +594,8 @@ race_counts_matrix <- xtabs(Count ~ Race , data = race_year_counts)
 colors <- c("lightblue", "lightgreen", "lightcoral", "lightpink", "wheat", "lavender", "gray")
 
 # creating bar plot
-barplot(race_counts_matrix, beside = TRUE, col = colors,
-        main = "Fatal Shootings by Race in Entire Database",
-        xlab = "Race", ylab = "Number of Fatal Shootings")
+pie(race_counts_matrix, col = colors,
+        main = "Fatal Shootings by Race in Entire Database")
 
 
 
@@ -592,9 +614,8 @@ race_counts_matrix_BLM <- xtabs(Count ~ Race , data = race_year_counts_BLM)
 colors <- c("lightblue", "lightgreen", "lightcoral", "lightpink", "wheat", "lavender", "gray")
 
 # creating bar plot
-barplot(race_counts_matrix_BLM, beside = TRUE, col = colors,
-        main = "Fatal Shootings by Race during peak BLM",
-        xlab = "Race", ylab = "Number of Fatal Shootings")
+pie(race_counts_matrix_BLM, col = colors,
+        main = "Fatal Shootings by Race during peak BLM",)
 
 
 
@@ -613,9 +634,10 @@ race_counts_matrix_covid <- xtabs(Count ~ Race , data = race_year_counts_BLM)
 colors <- c("lightblue", "lightgreen", "lightcoral", "lightpink", "wheat", "lavender", "gray")
 
 # creating bar plot
-barplot(race_counts_matrix_covid, beside = TRUE, col = colors,
+pie(race_counts_matrix_covid, col = colors,
         main = "Fatal Shootings by Race during Covid lockdowns",
-        xlab = "Race", ylab = "Number of Fatal Shootings")
+        )
 ```
+
 
 
