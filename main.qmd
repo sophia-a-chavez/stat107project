@@ -385,7 +385,7 @@ As we can see, the average number of fatal shootings a day were slightly greater
 
 **Event 2: Covid-19 Lockdowns**
 
-On January 5th, 2020, the CDC’s National Center for Immunization and Respetoriy Diseases investigated the outbreak of a pneumonia-adjacent illness that was not responding to treatment, and by March 15th all but 7 U.S states shut down businesses, universities, and other large gatherings while urging people to stay in their homes to slow the spread. By analizing our original dataset with respect to enforced quarantine periods, we can identify possible correlations between social movement and fatal shootings.
+On January 5th, 2020, the CDC’s National Center for Immunization and Respetoriy Diseases investigated the outbreak of a pneumonia-adjacent illness that was not responding to treatment, and by March 15th all but 7 U.S states shut down businesses, universities, and other large gatherings while urging people to stay in their homes to slow the spread. By analyzing our original dataset with respect to enforced quarantine periods, we can identify possible correlations between social movement and fatal shootings.
 
 ```{r}
 library(maps)
@@ -462,6 +462,8 @@ title( "After Covid-19 Lockdown")
 
 ```
 
+Map Visual Note: It’s important to remember the fatal shootings dataset has more data points before the COVID-19 pandemic compared to after. The higher density of shootings before the  COVID-19 lockdowns can be linked to the skewed dataset/states with higher population
+
 ```{r}
 #"Arkansas", "Iowa", "Nebraska", "North Dakota", "South Dakota", "Utah", "Wyomming"
 ## Arkansas data 
@@ -487,3 +489,5 @@ avg_shootings_after <- total_shootings_Aar / unique_days_after
 cat("Shootings per day in states with no enforced lockdowns",avg_shootings_during,"\n",  "Shootings per day in states with no enforced lockdowns",avg_shootings_before,"\n", "Shootings per day in  states with no enforced lockdowns",avg_shootings_after)
 
 ```
+
+We expect the total number of fatal shootings will decrease during the enforced lockdown period due to the decreased social gatherings. However, our results show a different pattern, in fact we can see that there was no significant drop in the number of average shootings per day before and during lockdowns. Additionally, when looking at our map visuals, specifically blue states, we can see that during and after the COVID-19 lockdowns the number of fatal shootings decreased slightly. Because we don't have enough significant data to identify a pattern in our data, We can not conclude that the COVID-19 pandemic did or did not impact the overall number of Pollice fatal shootings.
