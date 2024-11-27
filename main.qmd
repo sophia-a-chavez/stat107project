@@ -286,16 +286,15 @@ bodycam_true <- c(sum(during_covid$body_camera == "TRUE"), sum(shootings_period$
 
 bodycam_percent <- c((bodycam_true[1]/nrow(during_covid)), (bodycam_true[2]/nrow(shootings_period)),(bodycam_true[3]/nrow(FatalShootingsStats)))
 
-average_age <- c(mean(during_covid$age), mean(shootings_period$age), mean(FatalShootingsStats$age))
+average_age <- c(mean(during_covid$age, na.rm = TRUE), mean(shootings_period$age, na.rm = TRUE), mean(FatalShootingsStats$age, na.rm = TRUE))
 
 avg_shootings <-  c(avg_shootings_per_day_BLM, avg_shootings_duringCovid, avg_shootings_per_day_total)
 
-
 gun_armedp <- c((sum(during_covid$armed == "gun") /nrow(during_covid)), (sum(shootings_period$armed == "gun") /nrow(shootings_period)), (sum(FatalShootingsStats$armed == "gun") / nrow(FatalShootingsStats)))
 
-unarmed_armedp <- c((sum(during_covid$armed == "unarmed") /nrow(during_covid)), (sum(shootings_period$armed == "unarmed") / nrow(shootings_period)), (sum(data_17$armed == "unarmed") / nrow(FatalShootingsStats)))
+unarmed_armedp <- c((sum(during_covid$armed == "unarmed") /nrow(during_covid)), (sum(shootings_period$armed == "unarmed") / nrow(shootings_period)), (sum(FatalShootingsStats$armed == "unarmed") / nrow(FatalShootingsStats)))
 
-car_armedp <- c((sum(during_covid$armed == "Vehicle") / nrow(during_covid)), (sum(shootings_period$armed == "Vehicle") / nrow(shootings_period)), (sum(data_17$armed == "Vehicle") / nrow(FatalShootingsStats)))
+car_armedp <- c((sum(during_covid$armed == "Vehicle") / nrow(during_covid)), (sum(shootings_period$armed == "Vehicle") / nrow(shootings_period)), (sum(FatalShootingsStats$armed == "Vehicle") / nrow(FatalShootingsStats)))
 
 mental_illness <- c(sum(during_covid$signs_of_mental_illness == "TRUE")/nrow(during_covid), sum(shootings_period$signs_of_mental_illness == "TRUE")/nrow(shootings_period), sum(FatalShootingsStats$signs_of_mental_illness == "TRUE")/nrow(FatalShootingsStats))
 
