@@ -4,271 +4,27 @@ format: html
 editor: visual
 ---
 
-## Leo Guzman - attempt 1
+# Stat107 Project
 
-My plan is to find the average amount of shootings per year by race
+## Group: LCSB
+
+### Members: Sophia Chavez, Carolyn Hsu, Leo Guzman, and Bryan Pham
+
+#### Research topic:
+
+Our group will analyze a dataset containing the reported fatal police shootings in the United States from 2015 through 2022. By comparing our findings to the people in power and/or the social movements throughout those years, our goal is to identify any correlations between the current political/social climate and the reported fatal police shootings in the United States.
 
 ```{r}
 FatalShootingsStats <- read.csv("FatalPoliceShootings_US.csv")
-
-print(class(FatalShootingsStats))
-
 head(FatalShootingsStats)
 ```
 
 ```{r}
 #Convert the `date` column to Date format so can extract the year
 FatalShootingsStats$date <- as.Date(FatalShootingsStats$date, format = "%m/%d/%Y")
-
 #Made new column for year as an int
 FatalShootingsStats$year <- as.integer(format(FatalShootingsStats$date, "%Y"))
 
-
-```
-
-```{r}
-#Analyze 2015 as a test run
-
-data_filtered <- FatalShootingsStats[FatalShootingsStats$year == 2015, ]
-
-
-#Grab the total amount of times certain races are in the data
-asian_count <- nrow(data_filtered[data_filtered$race_name == 'Asian', ])
-black_count <- nrow(data_filtered[data_filtered$race_name == 'Black', ])
-white_count <- nrow(data_filtered[data_filtered$race_name == 'White', ])
-hispanic_count <- nrow(data_filtered[data_filtered$race_name == 'Hispanic', ])
-native_count <- nrow(data_filtered[data_filtered$race_name == 'Native American', ])
-other_count <- nrow(data_filtered[data_filtered$race_name == 'Other', ])
-unknown_count <- nrow(data_filtered[data_filtered$race_name == 'Unknown', ])
-
-#Created a data.frame with counts so can plot them
-race_counts <- data.frame(
-  race = c("White", "Black", "Hispanic", "Asian", "Native", "Other", "Unknown"),
-  count = c(white_count, black_count, hispanic_count, asian_count, native_count, other_count, unknown_count)
-)
-
-#Created a pie chart
-pie(race_counts$count, 
-    labels = race_counts$race, 
-    main = "Proportion of Different Races in Fatal Shootings in 2015",
-    col = rainbow(length(race_counts$count)))
-
-
-```
-
-```{r}
-## Sophia's addition 
-#creating subsets by year
-
-FatalShootingsStats <- na.omit(FatalShootingsStats) # getting rid of rows with any NA values
-
-# basic stats dependent on year
-data_15 <- subset(FatalShootingsStats, FatalShootingsStats$year == 2015 )
-data_16 <- subset(FatalShootingsStats, FatalShootingsStats$year == 2016 )
-data_17 <- subset(FatalShootingsStats, FatalShootingsStats$year == 2017 )
-data_18 <- subset(FatalShootingsStats, FatalShootingsStats$year == 2018 )
-data_19 <- subset(FatalShootingsStats, FatalShootingsStats$year == 2019 )
-data_20 <- subset(FatalShootingsStats, FatalShootingsStats$year == 2020 )
-data_21 <- subset(FatalShootingsStats, FatalShootingsStats$year == 2021 )
-data_22 <- subset(FatalShootingsStats, FatalShootingsStats$year == 2022 )
-
-total <- c(nrow(data_15), nrow(data_16), nrow(data_17), nrow(data_18), nrow(data_19), nrow(data_20), nrow(data_21), nrow(data_22) )
-
-average_age <- c(mean(data_15$age), mean(data_16$age), mean(data_17$age), mean(data_18$age), mean(data_19$age), mean(data_20$age), mean(data_21$age), mean(data_22$age))
-
-bodycam_false <- c(sum(data_15$body_camera == "FALSE"), sum(data_16$body_camera == "FALSE"), sum(data_17$body_camera == "FALSE"), sum(data_18$body_camera == "FALSE"), sum(data_19$body_camera == "FALSE"), sum(data_20$body_camera == "FALSE"), sum(data_21$body_camera == "FALSE"), sum(data_22$body_camera == "FALSE"))
-
-bodycam_true <- c(sum(data_15$body_camera == "TRUE"), sum(data_16$body_camera == "TRUE"), sum(data_17$body_camera == "TRUE"), sum(data_18$body_camera == "TRUE"), sum(data_19$body_camera == "TRUE"), sum(data_20$body_camera == "TRUE"), sum(data_21$body_camera == "TRUE"), sum(data_22$body_camera == "TRUE"))
-
-bodycam_percent <- c((bodycam_true[1]/total[1]), (bodycam_true[2]/total[2]),(bodycam_true[3]/total[3]),(bodycam_true[4]/total[4]),(bodycam_true[5]/total[5]),(bodycam_true[6]/total[6]),(bodycam_true[7]/total[7]),(bodycam_true[8]/total[7]))
-
-### adding percent of shootings with armed 
-gun_armedp <- c((sum(data_15$armed == "gun") / total[1]), (sum(data_16$armed == "gun") / total[2]), (sum(data_17$armed == "gun") / total[3]), (sum(data_18$armed == "gun") / total[4]), (sum(data_19$armed == "gun") / total[5]), (sum(data_20$armed == "gun") / total[6]), (sum(data_21$armed == "gun") / total[7]), (sum(data_22$armed == "gun") / total[7]))
-
-unarmed_armedp <- c((sum(data_15$armed == "unarmed") / total[1]), (sum(data_16$armed == "unarmed") / total[2]), (sum(data_17$armed == "unarmed") / total[3]), (sum(data_18$armed == "unarmed") / total[4]), (sum(data_19$armed == "unarmed") / total[5]), (sum(data_20$armed == "unarmed") / total[6]), (sum(data_21$armed == "unarmed") / total[7]), (sum(data_22$armed == "unarmed") / total[7]))
-
-car_armedp <- c((sum(data_15$armed == "Vehicle") / total[1]), (sum(data_16$armed == "Vehicle") / total[2]), (sum(data_17$armed == "Vehicle") / total[3]), (sum(data_18$armed == "Vehicle") / total[4]), (sum(data_19$armed == "Vehicle") / total[5]), (sum(data_20$armed == "Vehicle") / total[6]), (sum(data_21$armed == "Vehicle") / total[7]), (sum(data_22$armed == "Vehicle") / total[7]))
-
-
-mental_illness <- c(sum(data_15$signs_of_mental_illness == "TRUE")/total[1], sum(data_16$signs_of_mental_illness == "TRUE")/total[2], sum(data_17$signs_of_mental_illness == "TRUE")/total[3], sum(data_18$signs_of_mental_illness == "TRUE")/total[4], sum(data_19$signs_of_mental_illness == "TRUE")/total[5], sum(data_20$signs_of_mental_illness == "TRUE")/total[6], sum(data_21$signs_of_mental_illness == "TRUE")/total[7], sum(data_22$signs_of_mental_illness == "TRUE")/total[8])
-
-year_stats <- data.frame(total, round(average_age, 1), bodycam_false, bodycam_true, bodycam_percent, gun_armedp, unarmed_armedp, car_armedp, mental_illness) 
-
-names(year_stats) <- c("Total Fatal Shootings", "Average Age", "No Body Camera", "Yes Body Camera", "percent of officers with  body camera", "percent of victims armed with gun", "percent of victims unarmed", "percent of victims armed with vehicle", "percent of victims with mental illness")
-rownames(year_stats) <- c("2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022")
-year_stats
-
-
-
-
-
-
-```
-
-```{r}
-#Bryan's Additions
-# adding colunm for current president -> is not currently working,  
-
-
-FatalShootingsStats$month <- as.integer(format(FatalShootingsStats$date, "%m"))
-FatalShootingsStats$day <- as.integer(format(FatalShootingsStats$date, "%d"))
-
-FatalShootingsStats$President <-ifelse(FatalShootingsStats$month >= 1 & FatalShootingsStats$day >=20 & FatalShootingsStats$year >=2021, FatalShootingsStats$President <-"Joseph R. Biden", FatalShootingsStats$President <-"Donald Trump")
-
-FatalShootingsStats$President <-ifelse((FatalShootingsStats$month >= 1 & FatalShootingsStats$day >=20 & FatalShootingsStats$year <=2016), FatalShootingsStats$President <-"Barack Obama", FatalShootingsStats$President <-"Donald Trump")
-data_18 <- subset(FatalShootingsStats, FatalShootingsStats$year >= 2015 )
-
-head(data_18)
-
-```
-
-```{r}
-# aggregate data by year and race_name
-race_year_counts <- aggregate(FatalShootingsStats$race_name, 
-                              by = list(Year = FatalShootingsStats$year, 
-                                        Race = FatalShootingsStats$race_name), 
-                      FUN = length)
-colnames(race_year_counts)[3] <- "Count"
-
-# create a matrix to store counts for each race across years
-race_counts_matrix <- xtabs(Count ~ Race + Year, data = race_year_counts)
-
-# set up colors for each race
-colors <- c("lightblue", "lightgreen", "lightcoral", "lightpink", "wheat", "lavender", "gray")
-
-# creating bar plot
-barplot(race_counts_matrix, beside = TRUE, col = colors,
-        main = "Fatal Shootings by Race and Year",
-        xlab = "Year", ylab = "Number of Fatal Shootings", 
-        legend.text = rownames(race_counts_matrix), 
-        args.legend = list(x = "topright", inset = c(-0.05, 0)))
-
-```
-
-```{r}
-# set up an empty plot with the correct axes limits
-plot(NULL, xlim = range(race_year_counts$Year), 
-     ylim = range(race_year_counts$Count), 
-     xlab = "Year", ylab = "Number of Fatal Shootings", 
-     main = "Fatal Shootings by Race Over the Years")
-
-# define colors for each race
-race_colors <- c("blue", "green", "red", "purple", "orange", "pink", "gray")
-
-# get unique races
-unique_races <- unique(race_year_counts$Race)
-
-# loop through each race to plot its line on the graph
-for (i in 1:length(unique_races)) {
-  # Subset data for the current race
-  race_data <- subset(race_year_counts, Race == unique_races[i])
-  
-  # plot the line for this race
-  lines(race_data$Year, race_data$Count, type = "o", col = race_colors[i], pch = 16)
-}
-
-# add a legend
-legend("topright", legend = unique_races, col = race_colors, pch = 16, lty = 1)
-```
-
-```{r}
-# filtering data to include only unarmed incidents
-unarmed_data <- subset(FatalShootingsStats, FatalShootingsStats$armed == "unarmed")
-
-# count unarmed fatalities by race
-unarmed_deaths_by_race <- aggregate(unarmed_data$armed, 
-                                    by = list(Race = unarmed_data$race_name), 
-                                    FUN = length)
-colnames(unarmed_deaths_by_race)[2] <- "Unarmed_Deaths"
-
-# count display
-unarmed_deaths_by_race
-
-
-
-```
-
-```{r}
-# count total fatalities by race
-total_deaths_by_race <- aggregate(FatalShootingsStats$armed, 
-                                  by = list(Race = FatalShootingsStats$race_name), 
-                                  FUN = length)
-
-# ensure all races are represented in unarmed deaths by race
-all_races <- unique(FatalShootingsStats$race_name)
-unarmed_deaths_by_race <- aggregate(unarmed_data$armed, 
-                                    by = list(Race = unarmed_data$race_name), 
-                                    FUN = length)
-unarmed_deaths_by_race <- merge(data.frame(Race = all_races), unarmed_deaths_by_race, 
-                                by = "Race", all.x = TRUE)
-unarmed_deaths_by_race[is.na(unarmed_deaths_by_race)] <- 0  # Replace NA with 0
-
-# merge total deaths and unarmed deaths
-race_unarmed_comparison <- merge(unarmed_deaths_by_race, total_deaths_by_race, 
-                                 by = "Race", 
-                                 suffixes = c("_Unarmed", "_Total"))
-
-# calculate percentage of unarmed fatalities for each race
-race_unarmed_comparison$Unarmed_Death_Percentage <- 
-  (race_unarmed_comparison$x_Unarmed / race_unarmed_comparison$x_Total) * 100
-
-# rename columns for clarity
-colnames(race_unarmed_comparison) <- c("Race", "Unarmed_Deaths", "Total_Deaths", "Unarmed_Death_Percentage")
-
-# display the updated data frame
-race_unarmed_comparison
-
-# adjust margins to give more space to labels
-par(mar = c(5, 10, 4, 2) + 0.1) # Increase left margin for y-axis labels
-
-# create a horizontal bar plot
-barplot(race_unarmed_comparison$Unarmed_Death_Percentage,
-names.arg = race_unarmed_comparison$Race,
-main = "Percentage of Unarmed Fatalities by Race",
-xlab = "Percentage of Unarmed Fatalities",
-col = "lightcoral",
-horiz = TRUE,       # Horizontal bars
-las = 1,            # Ensure labels are horizontal on y-axis
-cex.names = 0.9)    # Adjust label size if needed
-
-# reset margins after plotting (optional if running multiple plots in sequence)
-par(mar = c(5, 4, 4, 2) + 0.1)
-
-```
-
-```{r}
-##adding map visual, needs work
-library(maps)
-
-asian_count <- subset(FatalShootingsStats, FatalShootingsStats$race_name == 'Asian' )
-black_count <- subset(FatalShootingsStats, FatalShootingsStats$race_name == 'Black')
-white_count <- subset(FatalShootingsStats, FatalShootingsStats$race_name == 'White')
-hispanic_count <- subset(FatalShootingsStats, FatalShootingsStats$race_name == 'Hispanic')
-native_count <-subset(FatalShootingsStats, FatalShootingsStats$race_name =='Native American')
-other_count <- subset(FatalShootingsStats, FatalShootingsStats$race_name == 'Other')
-unknown_count <- subset(FatalShootingsStats, FatalShootingsStats$race_name == 'Unknown')
-
-maps::map("state")
-points(asian_count$longitude, asian_count$latitude,
-  pch = 4, col = "deeppink", cex = 1)
-
-points(black_count$longitude, black_count$latitude,
-  pch = 4, col = "yellow", cex = 1)
-
-points(white_count$longitude, white_count$latitude,
-  pch = 4, col = "red", cex = 1)
-
-points(hispanic_count$longitude, hispanic_count$latitude,
-  pch = 4, col = "purple", cex = 1)
-
-points(native_count$longitude, native_count$latitude,
-  pch = 4, col = "blue", cex = 1)
-
-points(other_count$longitude, other_count$latitude,
-  pch = 4, col = "black", cex = 1)
-
-points(unknown_count$longitude, unknown_count$latitude,
-  pch = 4, col = "orange", cex = 1)
 
 ```
 
@@ -368,8 +124,8 @@ library(maps)
 state_to_highlight <- "Minnesota"
 
 # Basic Map Plot
-map("state", col = "lightgray", fill = TRUE, bg = "white", lwd = 0.2)  # Draw USA map
-map("state", region = state_to_highlight, col = "lightblue", fill = TRUE, add = TRUE)
+maps::map("state", col = "lightgray", fill = TRUE, bg = "white", lwd = 0.2)  # Draw USA map
+maps::map("state", region = state_to_highlight, col = "lightblue", fill = TRUE, add = TRUE)
 
 # Overlay points for Los Angeles and Miami
 # Coordinates for Los Angeles
@@ -464,17 +220,17 @@ title( "After Covid-19 Lockdown")
 
 ```
 
-Map Visual Note: It’s important to remember the fatal shootings dataset has more data points before the COVID-19 pandemic compared to after. The higher density of shootings before the  COVID-19 lockdowns can be linked to the skewed dataset/states with higher population
+Map Visual Note: It’s important to remember the fatal shootings dataset has more data points before the COVID-19 pandemic compared to after. The higher density of shootings before the COVID-19 lockdowns can be linked to the skewed dataset/states with higher population
 
 ```{r}
 #"Arkansas", "Iowa", "Nebraska", "North Dakota", "South Dakota", "Utah", "Wyomming"
 ## Arkansas data 
 before_ar <- before_covid %>%
   filter(before_covid$state == "AR" | before_covid$state == "IA" | before_covid$state == "NE" | before_covid$state == "ND" | before_covid$state == "SD" | before_covid$state == "UT" | before_covid$state == "WY" )
-during_ar <- before_covid %>%
-  filter(before_covid$state == "AR" | before_covid$state == "IA" | before_covid$state == "NE" | before_covid$state == "ND" | before_covid$state == "SD" | before_covid$state == "UT" | before_covid$state == "WY" )
-after_ar <- before_covid %>%
-  filter(before_covid$state == "AR" | before_covid$state == "IA" | before_covid$state == "NE" | before_covid$state == "ND" | before_covid$state == "SD" | before_covid$state == "UT" | before_covid$state == "WY" )
+during_ar <- during_covid %>%
+  filter(during_covid$state == "AR" | during_covid$state == "IA" | during_covid$state == "NE" | during_covid$state == "ND" | during_covid$state == "SD" | during_covid$state == "UT" | during_covid$state == "WY" )
+after_ar <- after_covid %>%
+  filter(after_covid$state == "AR" | after_covid$state == "IA" | after_covid$state == "NE" | after_covid$state == "ND" | after_covid$state == "SD" | after_covid$state == "UT" | after_covid$state == "WY" )
 
 
 #total number of shootings per time period
@@ -488,7 +244,7 @@ state_avg_shootings_during <- total_shootings_Dar / unique_days_during
 state_avg_shootings_before <- total_shootings_Bar / unique_days_before
 state_avg_shootings_after <- total_shootings_Aar / unique_days_after
 
-cat("Shootings per day in states with no enforced lockdowns",state_avg_shootings_during,"\n",  "Shootings per day in states with no enforced lockdowns",state_avg_shootings_before,"\n", "Shootings per day in  states with no enforced lockdowns",state_avg_shootings_after)
+cat("Shootings per day during COVID-19 in states with no enforced lockdowns",state_avg_shootings_during,"\n",  "Shootings per day before COVID-19 in states with no enforced lockdowns",state_avg_shootings_before,"\n", "Shootings per day after COVID-19in  states with no enforced lockdowns",state_avg_shootings_after)
 
 ```
 
@@ -498,8 +254,8 @@ We expect the total number of fatal shootings will decrease during the enforced 
 
 ```
 
-# Fatal Shootings Dataset Analytics 
-# Compairing Event 1 and 2
+# Fatal Shootings Dataset Analytics/ Compairing Event 1 and 2
+
 ```{r}
 
 #BLM
@@ -557,7 +313,7 @@ colors <- c("lightblue", "lightgreen", "lightcoral")
 barplot(BLM_Covid$`Average Fatal Shootings Per Day`, 
         col = colors,
         main = "Average Fatal Shootings Per Day",
-        xlab = "Time Period", )
+        xlab = "Time Period",  )
 legend("topright", legend = time_period , col = colors, pch = 16 ) #TO FIX make sure legend is not on top of figure
 #armed (gun)
 time_period <- c("BLM", "COVID", "Entire Database")
@@ -565,7 +321,7 @@ colors <- c("lightblue", "lightgreen", "lightcoral")
 barplot(BLM_Covid$`Armed (gun)`, 
         col = colors,
         main = "Percent of shooting victims Armed(GUN) ",
-        xlab = "Time Period", )
+        xlab = "Time Period", ylim = c(0,1))
 legend("topright", legend = time_period , col = colors, pch = 16 ) #TO FIX make sure legend is not on top of figure
 #
 time_period <- c("BLM", "COVID", "Entire Database")
@@ -573,9 +329,9 @@ colors <- c("lightblue", "lightgreen", "lightcoral")
 barplot(BLM_Covid$`Percent of officers with turned on body camera`, 
         col = colors,
         main = "Percent of officers with turned on body camera",
-        xlab = "Time Period", )
-legend("topright", legend = time_period , col = colors, pch = 16 ) #TO FIX make sure legend is not on top of figure
-
+        xlab = "Time Period", ylim = c(0,1))
+legend("topright", legend = time_period , col = colors, pch = 16) #TO FIX make sure legend is not on top of figure
+# another option changing lables into x axis 
 ```
 
 ```{r}
@@ -632,12 +388,117 @@ race_counts_matrix_covid <- xtabs(Count ~ Race , data = race_year_counts_BLM)
 
 # set up colors for each race
 colors <- c("lightblue", "lightgreen", "lightcoral", "lightpink", "wheat", "lavender", "gray")
-
 # creating bar plot
 pie(race_counts_matrix_covid, col = colors,
         main = "Fatal Shootings by Race during Covid lockdowns",
         )
 ```
 
+```{r}
+# filtering data to include only unarmed incidents
+unarmed_data <- subset(FatalShootingsStats, FatalShootingsStats$armed == "unarmed")
+
+# count unarmed fatalities by race
+unarmed_deaths_by_race <- aggregate(unarmed_data$armed, 
+                                    by = list(Race = unarmed_data$race_name), 
+                                    FUN = length)
+colnames(unarmed_deaths_by_race)[2] <- "Unarmed_Deaths"
+
+# count display
+unarmed_deaths_by_race
+# count total fatalities by race
+total_deaths_by_race <- aggregate(FatalShootingsStats$armed, 
+                                  by = list(Race = FatalShootingsStats$race_name), 
+                                  FUN = length)
+
+# ensure all races are represented in unarmed deaths by race
+all_races <- unique(FatalShootingsStats$race_name)
+unarmed_deaths_by_race <- aggregate(unarmed_data$armed, 
+                                    by = list(Race = unarmed_data$race_name), 
+                                    FUN = length)
+unarmed_deaths_by_race <- merge(data.frame(Race = all_races), unarmed_deaths_by_race, 
+                                by = "Race", all.x = TRUE)
+unarmed_deaths_by_race[is.na(unarmed_deaths_by_race)] <- 0  # Replace NA with 0
+
+# merge total deaths and unarmed deaths
+race_unarmed_comparison <- merge(unarmed_deaths_by_race, total_deaths_by_race, 
+                                 by = "Race", 
+                                 suffixes = c("_Unarmed", "_Total"))
+
+# calculate percentage of unarmed fatalities for each race
+race_unarmed_comparison$Unarmed_Death_Percentage <- 
+  (race_unarmed_comparison$x_Unarmed / race_unarmed_comparison$x_Total) * 100
+
+# rename columns for clarity
+colnames(race_unarmed_comparison) <- c("Race", "Unarmed_Deaths", "Total_Deaths", "Unarmed_Death_Percentage")
+
+# display the updated data frame
+race_unarmed_comparison
+
+# adjust margins to give more space to labels
+par(mar = c(5, 10, 4, 2) + 0.1) # Increase left margin for y-axis labels
+
+# create a horizontal bar plot
+barplot(race_unarmed_comparison$Unarmed_Death_Percentage,
+names.arg = race_unarmed_comparison$Race,
+main = "Percentage of Unarmed Fatalities by Race",
+xlab = "Percentage of Unarmed Fatalities",
+col = "lightcoral",
+horiz = TRUE,       # Horizontal bars
+las = 1,            # Ensure labels are horizontal on y-axis
+cex.names = 0.9)    # Adjust label size if needed
+
+# reset margins after plotting (optional if running multiple plots in sequence)
+par(mar = c(5, 4, 4, 2) + 0.1)
+```
 
 
+```{r}
+# aggregate data by year and race_name
+race_year_counts <- aggregate(FatalShootingsStats$race_name, 
+                              by = list(Year = FatalShootingsStats$year, 
+                                        Race = FatalShootingsStats$race_name), 
+                      FUN = length)
+colnames(race_year_counts)[3] <- "Count"
+
+# create a matrix to store counts for each race across years
+race_counts_matrix <- xtabs(Count ~ Race + Year, data = race_year_counts)
+
+# set up colors for each race
+colors <- c("lightblue", "lightgreen", "lightcoral", "lightpink", "wheat", "lavender", "gray")
+
+# creating bar plot
+barplot(race_counts_matrix, beside = TRUE, col = colors,
+        main = "Fatal Shootings by Race and Year",
+        xlab = "Year", ylab = "Number of Fatal Shootings", 
+        legend.text = rownames(race_counts_matrix), 
+        args.legend = list(x = "topright", inset = c(-0.05, 0)))
+
+```
+
+
+```{r}
+# set up an empty plot with the correct axes limits
+plot(NULL, xlim = range(race_year_counts$Year), 
+     ylim = range(race_year_counts$Count), 
+     xlab = "Year", ylab = "Number of Fatal Shootings", 
+     main = "Fatal Shootings by Race Over the Years")
+
+# define colors for each race
+race_colors <- c("blue", "green", "red", "purple", "orange", "pink", "gray")
+
+# get unique races
+unique_races <- unique(race_year_counts$Race)
+
+# loop through each race to plot its line on the graph
+for (i in 1:length(unique_races)) {
+  # Subset data for the current race
+  race_data <- subset(race_year_counts, Race == unique_races[i])
+  
+  # plot the line for this race
+  lines(race_data$Year, race_data$Count, type = "o", col = race_colors[i], pch = 16)
+}
+
+# add a legend
+legend("topright", legend = unique_races, col = race_colors, pch = 16, lty = 1)
+```
