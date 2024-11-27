@@ -272,6 +272,8 @@ points(unknown_count$longitude, unknown_count$latitude,
 
 ```
 
+## Event 1: Black Lives Matter Movement
+
 ```{r}
 library(dplyr)
 library(ggplot2)
@@ -383,7 +385,7 @@ points(shootings_period$longitude, shootings_period$latitude, col = "red", pch =
 
 As we can see, the average number of fatal shootings a day were slightly greater during the peak of the riots, vandalism, arson and looting after George Floyd's death. Surprisingly, none of the deaths occurred in Minneapolis, which was a hot spot for said BLM riots, but Los Angeles, which was also a hot spot, is shown to have a few deaths in it's area. So, while the average number of fatal shooting during the peak of the BLM riots period doesn't seem that much larger than the average number of fatal shootings in the entire data set, it doesn't tell the entire picture. If the average number of fatal shootings during the seven and a half years the data set encapsulates was the same as the average during the peak of the BLM riots, there would be an increase of 1,769 fatal shootings or 236 fatal shootings a year.
 
-**Event 2: Covid-19 Lockdowns**
+## **Event 2: Covid-19 Lockdowns**
 
 On January 5th, 2020, the CDC’s National Center for Immunization and Respetoriy Diseases investigated the outbreak of a pneumonia-adjacent illness that was not responding to treatment, and by March 15th all but 7 U.S states shut down businesses, universities, and other large gatherings while urging people to stay in their homes to slow the spread. By analyzing our original dataset with respect to enforced quarantine periods, we can identify possible correlations between social movement and fatal shootings.
 
@@ -482,12 +484,138 @@ total_shootings_Aar <- nrow(after_ar)
 
 
 #shootings per day
-avg_shootings_during <- total_shootings_Dar / unique_days_during
-avg_shootings_before <- total_shootings_Bar / unique_days_before
-avg_shootings_after <- total_shootings_Aar / unique_days_after
+state_avg_shootings_during <- total_shootings_Dar / unique_days_during
+state_avg_shootings_before <- total_shootings_Bar / unique_days_before
+state_avg_shootings_after <- total_shootings_Aar / unique_days_after
 
-cat("Shootings per day in states with no enforced lockdowns",avg_shootings_during,"\n",  "Shootings per day in states with no enforced lockdowns",avg_shootings_before,"\n", "Shootings per day in  states with no enforced lockdowns",avg_shootings_after)
+cat("Shootings per day in states with no enforced lockdowns",state_avg_shootings_during,"\n",  "Shootings per day in states with no enforced lockdowns",state_avg_shootings_before,"\n", "Shootings per day in  states with no enforced lockdowns",state_avg_shootings_after)
 
 ```
 
 We expect the total number of fatal shootings will decrease during the enforced lockdown period due to the decreased social gatherings. However, our results show a different pattern, in fact we can see that there was no significant drop in the number of average shootings per day before and during lockdowns. Additionally, when looking at our map visuals, specifically blue states, we can see that during and after the COVID-19 lockdowns the number of fatal shootings decreased slightly. Because we don't have enough significant data to identify a pattern in our data, We can not conclude that the COVID-19 pandemic did or did not impact the overall number of Pollice fatal shootings.
+
+```{r}
+
+```
+
+# Fatal Shootings Dataset Analytics 
+# Compairing Event 1 and 2
+```{r}
+
+#BLM
+date1 <- as.Date("2020-05-26")  # Example date 1
+date2 <- as.Date("2020-06-08")  # Example date 2
+# Filter data for those two dates and count the total number of shootings
+shootings_period <- FatalShootingsStats %>%
+  filter(date >= date1 & date <= date2)
+# Number of unique days in the time period
+unique_days_period <- length(seq.Date(date1, date2, by = "day"))
+# Total number of shootings in the time period
+total_shootings_period <- nrow(shootings_period)
+avg_shootings_per_day_BLM <- total_shootings_period / unique_days_period
+
+
+#Lockdowns
+during_date1 <- as.Date("2020-03-15")  # main US lockdown start
+during_date2 <- as.Date("2021-05-01")  # need to find sorce for this date
+during_covid <- FatalShootingsStats %>%
+  filter(date >= during_date1 & date <= during_date2)
+total_shootings_during <- nrow(during_covid)
+#total number of days in time period
+unique_days_during <- length(seq.Date(during_date1, during_date2, by = "day"))
+#shootings per day
+avg_shootings_duringCovid <- total_shootings_during / unique_days_during
+
+bodycam_true <- c(sum(during_covid$body_camera == "TRUE"), sum(shootings_period$body_camera == "TRUE"), sum(FatalShootingsStats$body_camera == "TRUE"))
+
+bodycam_percent <- c((bodycam_true[1]/nrow(during_covid)), (bodycam_true[2]/nrow(shootings_period)),(bodycam_true[3]/nrow(FatalShootingsStats)))
+
+average_age <- c(mean(during_covid$age), mean(shootings_period$age), mean(FatalShootingsStats$age))
+
+avg_shootings <-  c(avg_shootings_per_day_BLM, avg_shootings_duringCovid, avg_shootings_per_day_total)
+
+
+gun_armedp <- c((sum(during_covid$armed == "gun") /nrow(during_covid)), (sum(shootings_period$armed == "gun") /nrow(shootings_period)), (sum(FatalShootingsStats$armed == "gun") / nrow(FatalShootingsStats)))
+
+unarmed_armedp <- c((sum(during_covid$armed == "unarmed") /nrow(during_covid)), (sum(shootings_period$armed == "unarmed") / nrow(shootings_period)), (sum(data_17$armed == "unarmed") / nrow(FatalShootingsStats)))
+
+car_armedp <- c((sum(during_covid$armed == "Vehicle") / nrow(during_covid)), (sum(shootings_period$armed == "Vehicle") / nrow(shootings_period)), (sum(data_17$armed == "Vehicle") / nrow(FatalShootingsStats)))
+
+mental_illness <- c(sum(during_covid$signs_of_mental_illness == "TRUE")/nrow(during_covid), sum(shootings_period$signs_of_mental_illness == "TRUE")/nrow(shootings_period), sum(FatalShootingsStats$signs_of_mental_illness == "TRUE")/nrow(FatalShootingsStats))
+
+
+BLM_Covid <- data.frame(avg_shootings, round(average_age, 1), bodycam_percent, gun_armedp, unarmed_armedp, car_armedp, mental_illness) 
+names(BLM_Covid) <- c("Average Fatal Shootings Per Day", "Average Age", "Percent of officers with turned on body camera", "Armed (gun)", "Unarmed", "Armed (car)", "Signs of mental illness")
+rownames(BLM_Covid) <- c("BLM", "Covid-19", "Entire Dataset")
+BLM_Covid
+
+BLM_race_count<- shootings_period %>%
+  group_by(race_name) %>%
+  summarise(PriceMean = nrow(race_name))
+BLM_race_count
+
+```
+```{r}
+#entire data
+# aggregate data by year and race_name
+race_year_counts <- aggregate(FatalShootingsStats$race_name, 
+                              by = list( 
+                                        Race = FatalShootingsStats$race_name), 
+                      FUN = length)
+colnames(race_year_counts)[2] <- "Count"
+
+# create a matrix to store counts for each race across years
+race_counts_matrix <- xtabs(Count ~ Race , data = race_year_counts)
+
+# set up colors for each race
+colors <- c("lightblue", "lightgreen", "lightcoral", "lightpink", "wheat", "lavender", "gray")
+
+# creating bar plot
+barplot(race_counts_matrix, beside = TRUE, col = colors,
+        main = "Fatal Shootings by Race in Entire Database",
+        xlab = "Race", ylab = "Number of Fatal Shootings")
+
+
+
+# BLM
+race_year_counts_BLM <- aggregate(shootings_period$race_name, 
+                              by = list( 
+                                        Race = shootings_period$race_name), 
+                      FUN = length)
+
+colnames(race_year_counts_BLM)[2] <- "Count"
+
+# create a matrix to store counts for each race across years
+race_counts_matrix_BLM <- xtabs(Count ~ Race , data = race_year_counts_BLM)
+
+# set up colors for each race
+colors <- c("lightblue", "lightgreen", "lightcoral", "lightpink", "wheat", "lavender", "gray")
+
+# creating bar plot
+barplot(race_counts_matrix_BLM, beside = TRUE, col = colors,
+        main = "Fatal Shootings by Race during peak BLM",
+        xlab = "Race", ylab = "Number of Fatal Shootings")
+
+
+
+# covid
+race_year_counts_covid <- aggregate(during_covid$race_name, 
+                              by = list( 
+                                        Race = during_covid$race_name), 
+                      FUN = length)
+
+colnames(race_year_counts_covid)[2] <- "Count"
+
+# create a matrix to store counts for each race across years
+race_counts_matrix_covid <- xtabs(Count ~ Race , data = race_year_counts_BLM)
+
+# set up colors for each race
+colors <- c("lightblue", "lightgreen", "lightcoral", "lightpink", "wheat", "lavender", "gray")
+
+# creating bar plot
+barplot(race_counts_matrix_covid, beside = TRUE, col = colors,
+        main = "Fatal Shootings by Race during Covid lockdowns",
+        xlab = "Race", ylab = "Number of Fatal Shootings")
+```
+
+
