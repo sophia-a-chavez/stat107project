@@ -15,11 +15,13 @@ editor: visual
 Our group will analyze a dataset containing the reported fatal police shootings in the United States from 2015 through 2022. By comparing our findings to the people in power and/or the social movements throughout those years, our goal is to identify any correlations between the current political/social climate and the reported fatal police shootings in the United States.
 
 ```{r}
+#| code-fold: true
 FatalShootingsStats <- read.csv("FatalPoliceShootings_US.csv")
-head(FatalShootingsStats)
+head(FatalShootingsStats, 2)
 ```
 
 ```{r}
+#| code-fold: true
 #Convert the `date` column to Date format so can extract the year
 FatalShootingsStats$date <- as.Date(FatalShootingsStats$date, format = "%m/%d/%Y")
 #Made new column for year as an int
@@ -31,6 +33,7 @@ FatalShootingsStats$year <- as.integer(format(FatalShootingsStats$date, "%Y"))
 ## Event 1: Black Lives Matter Movement
 
 ```{r}
+#| code-fold: true
 library(dplyr)
 library(ggplot2)
 
@@ -65,6 +68,7 @@ ggplot(FatalShootingsStats, aes(x = race_name, y = age, fill = AgeRange)) +
 On May 25, 2020, George Floyd, a Black man living in Minneapolis, Minnesota was brutally killed by a Minneapolis police officer. This sparked a new peak in the Black Lives Matter (BLM) movement, where there was a new wave of both peaceful protests and riots. The peak of the BLM riots, vandalism, arson and looting occurred from May 26th to June 8th in 2020. During these 2 weeks, were fatal shootings higher than normal?
 
 ```{r}
+#| code-fold: true
 # Convert the 'Date' column to Date type if it isn't already
 FatalShootingsStats$date <- as.Date(FatalShootingsStats$date, format = "%Y-%m-%d")  # Adjust format if needed
 
@@ -106,6 +110,7 @@ cat("Average shootings per day for the entire dataset:", avg_shootings_per_day_t
 ```
 
 ```{r}
+#| code-fold: true
 # Create a vector with the two averages
 average_shootings <- c(avg_shootings_per_day_period, avg_shootings_per_day_total)
 
@@ -120,6 +125,7 @@ barplot(average_shootings,
 ```
 
 ```{r}
+#| code-fold: true
 library(maps)
 state_to_highlight <- "Minnesota"
 
@@ -146,6 +152,7 @@ As we can see, the average number of fatal shootings a day were slightly greater
 On January 5th, 2020, the CDC’s National Center for Immunization and Respiratory Diseases investigated the outbreak of a pneumonia-adjacent illness that was not responding to treatment, and by March 15th all but 7 U.S states shut down businesses, universities, and other large gatherings while urging people to stay in their homes to slow the spread. By analyzing our original dataset with respect to enforced quarantine periods, we can identify possible correlations between spatial mobility and fatal shootings in the US.
 
 ```{r}
+#| code-fold: true
 library(maps)
 
 library(tidyverse)
@@ -194,6 +201,7 @@ cat("After the lockdowns: Total shootings ",total_shootings_after," Average shoo
 ```
 
 ```{r}
+#| code-fold: true
 state_to_highlight <- c("Arkansas", "Iowa", "Nebraska", "North Dakota", "South Dakota", "Utah", "Wyomming") #sates that never enforced lockdown
 # Basic Map Plot
 
@@ -223,6 +231,7 @@ title( "After Covid-19 Lockdown")
 Map Visual Note: It’s important to remember the fatal shootings dataset has more data points before the COVID-19 pandemic compared to after. The higher density of shootings before the COVID-19 lockdowns can be linked to the skewed dataset/states with higher population
 
 ```{r}
+#| code-fold: true
 #"Arkansas", "Iowa", "Nebraska", "North Dakota", "South Dakota", "Utah", "Wyomming"
 ## Arkansas data 
 before_ar <- before_covid %>%
@@ -257,7 +266,7 @@ We expect the total number of fatal shootings will decrease during the enforced 
 # Fatal Shootings Dataset Analytics/ Compairing Event 1 and 2
 
 ```{r}
-
+#| code-fold: true
 #BLM
 date1 <- as.Date("2020-05-26")  # Example date 1
 date2 <- as.Date("2020-06-08")  # Example date 2
@@ -308,6 +317,7 @@ BLM_Covid
 hat
 
 ```{r}
+#| code-fold: true
 # showing interesting data points
 time_period <- c("BLM", "COVID", "Entire Database")
 colors <- c("lightblue", "lightgreen", "lightcoral")
@@ -336,6 +346,7 @@ legend("topright", legend = time_period , col = colors, pch = 16)
 ```
 
 ```{r}
+#| code-fold: true
 # filtering data to include only unarmed incidents
 unarmed_data <- subset(FatalShootingsStats, FatalShootingsStats$armed == "unarmed")
 
@@ -396,6 +407,7 @@ par(mar = c(5, 4, 4, 2) + 0.1)
 ```
 
 ```{r}
+#| code-fold: true
 # aggregate data by year and race_name
 race_year_counts <- aggregate(FatalShootingsStats$race_name, 
                               by = list(Year = FatalShootingsStats$year, 
@@ -419,6 +431,7 @@ barplot(race_counts_matrix, beside = TRUE, col = colors,
 ```
 
 ```{r}
+#| code-fold: true
 # set up an empty plot with the correct axes limits
 plot(NULL, xlim = range(race_year_counts$Year), 
      ylim = c(0,700), 
