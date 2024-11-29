@@ -143,7 +143,7 @@ As we can see, the average number of fatal shootings a day were slightly greater
 
 ## **Event 2: Covid-19 Lockdowns**
 
-On January 5th, 2020, the CDC’s National Center for Immunization and Respetoriy Diseases investigated the outbreak of a pneumonia-adjacent illness that was not responding to treatment, and by March 15th all but 7 U.S states shut down businesses, universities, and other large gatherings while urging people to stay in their homes to slow the spread. By analyzing our original dataset with respect to enforced quarantine periods, we can identify possible correlations between social movement and fatal shootings.
+On January 5th, 2020, the CDC’s National Center for Immunization and Respiratory Diseases investigated the outbreak of a pneumonia-adjacent illness that was not responding to treatment, and by March 15th all but 7 U.S states shut down businesses, universities, and other large gatherings while urging people to stay in their homes to slow the spread. By analyzing our original dataset with respect to enforced quarantine periods, we can identify possible correlations between spatial mobility and fatal shootings in the US.
 
 ```{r}
 library(maps)
@@ -248,7 +248,7 @@ cat("Shootings per day during COVID-19 in states with no enforced lockdowns",sta
 
 ```
 
-We expect the total number of fatal shootings will decrease during the enforced lockdown period due to the decreased social gatherings. However, our results show a different pattern, in fact we can see that there was no significant drop in the number of average shootings per day before and during lockdowns. Additionally, when looking at our map visuals, specifically blue states, we can see that during and after the COVID-19 lockdowns the number of fatal shootings decreased slightly. Because we don't have enough significant data to identify a pattern in our data, We can not conclude that the COVID-19 pandemic did or did not impact the overall number of Pollice fatal shootings.
+We expect the total number of fatal shootings will decrease during the enforced lockdown period due to the decreased social gatherings. However, our results show a different pattern, in fact we can see that there was no significant drop in the number of average shootings per day before and during lockdowns. Additionally, we can see that during and before COVID-19 lockdowns, the number of fatal shootings decreased in both states with and without enforced lockdowns. The decreased number of shootings in non-enforced lockdown states may be attributed to the overall decreased spatial mobility in the US. Numerous households voluntarily quarantined regardless of their state's COVID-19 restrictions. Because we can identify a slight decreasing pattern in our data, we can conclude that the COVID-19 pandemic had little to no significant impact on the overall number of Pollice fatal shootings.
 
 ```{r}
 
@@ -305,6 +305,8 @@ rownames(BLM_Covid) <- c("BLM", "Covid-19", "Entire Dataset")
 BLM_Covid
 ```
 
+hat
+
 ```{r}
 # showing interesting data points
 time_period <- c("BLM", "COVID", "Entire Database")
@@ -321,7 +323,7 @@ barplot(BLM_Covid$`Armed (gun)`,
         col = colors,
         main = "Percent of shooting victims Armed(GUN) ",
         xlab = "Time Period", ylim = c(0,1))
-legend("topright", legend = time_period , col = colors, pch = 16 ) #TO FIX make sure legend is not on top of figure
+legend("topright", legend = time_period , col = colors, pch = 16 ) 
 #
 time_period <- c("BLM", "COVID", "Entire Database")
 colors <- c("lightblue", "lightgreen", "lightcoral")
@@ -329,68 +331,8 @@ barplot(BLM_Covid$`Percent of officers with turned on body camera`,
         col = colors,
         main = "Percent of officers with turned on body camera",
         xlab = "Time Period", ylim = c(0,1))
-legend("topright", legend = time_period , col = colors, pch = 16) #TO FIX make sure legend is not on top of figure
+legend("topright", legend = time_period , col = colors, pch = 16) 
 # another option changing lables into x axis 
-```
-
-```{r}
-#entire data
-# aggregate data by year and race_name
-race_year_counts <- aggregate(FatalShootingsStats$race_name, 
-                              by = list( 
-                                        Race = FatalShootingsStats$race_name), 
-                      FUN = length)
-colnames(race_year_counts)[2] <- "Count"
-
-# create a matrix to store counts for each race across years
-race_counts_matrix <- xtabs(Count ~ Race , data = race_year_counts)
-
-# set up colors for each race
-colors <- c("lightblue", "lightgreen", "lightcoral", "lightpink", "wheat", "lavender", "gray")
-
-# creating bar plot
-pie(race_counts_matrix, col = colors,
-        main = "Fatal Shootings by Race in Entire Database")
-
-
-
-# BLM
-race_year_counts_BLM <- aggregate(shootings_period$race_name, 
-                              by = list( 
-                                        Race = shootings_period$race_name), 
-                      FUN = length)
-
-colnames(race_year_counts_BLM)[2] <- "Count"
-
-# create a matrix to store counts for each race across years
-race_counts_matrix_BLM <- xtabs(Count ~ Race , data = race_year_counts_BLM)
-
-# set up colors for each race
-colors <- c("lightblue", "lightgreen", "lightcoral", "lightpink", "wheat", "lavender", "gray")
-
-# creating bar plot
-pie(race_counts_matrix_BLM, col = colors,
-        main = "Fatal Shootings by Race during peak BLM",)
-
-
-
-# covid
-race_year_counts_covid <- aggregate(during_covid$race_name, 
-                              by = list( 
-                                        Race = during_covid$race_name), 
-                      FUN = length)
-
-colnames(race_year_counts_covid)[2] <- "Count"
-
-# create a matrix to store counts for each race across years
-race_counts_matrix_covid <- xtabs(Count ~ Race , data = race_year_counts_BLM)
-
-# set up colors for each race
-colors <- c("lightblue", "lightgreen", "lightcoral", "lightpink", "wheat", "lavender", "gray")
-# creating bar plot
-pie(race_counts_matrix_covid, col = colors,
-        main = "Fatal Shootings by Race during Covid lockdowns",
-        )
 ```
 
 ```{r}
@@ -449,8 +391,9 @@ cex.names = 0.9)    # Adjust label size if needed
 
 # reset margins after plotting (optional if running multiple plots in sequence)
 par(mar = c(5, 4, 4, 2) + 0.1)
-```
 
+# i think this code can be reused if we make the x axis the time period and show unarmed/armed deaths per race - sophia
+```
 
 ```{r}
 # aggregate data by year and race_name
@@ -471,15 +414,14 @@ barplot(race_counts_matrix, beside = TRUE, col = colors,
         main = "Fatal Shootings by Race and Year",
         xlab = "Year", ylab = "Number of Fatal Shootings", 
         legend.text = rownames(race_counts_matrix), 
-        args.legend = list(x = "topright", inset = c(-0.05, 0)))
+        args.legend = list(x = "topright", inset = c(-0.05, 0)), ylim = c(0,1200))
 
 ```
-
 
 ```{r}
 # set up an empty plot with the correct axes limits
 plot(NULL, xlim = range(race_year_counts$Year), 
-     ylim = range(race_year_counts$Count), 
+     ylim = c(0,700), 
      xlab = "Year", ylab = "Number of Fatal Shootings", 
      main = "Fatal Shootings by Race Over the Years")
 
@@ -501,3 +443,5 @@ for (i in 1:length(unique_races)) {
 # add a legend
 legend("topright", legend = unique_races, col = race_colors, pch = 16, lty = 1)
 ```
+
+Findings: During peak BLM movement periods, the percentage of officers with turned-on body cameras increases from approximately 14% to 21%. Additionally, there is a positive correlation between average fatalities per day and the percentage of turned-on body cameras throughout all highlighted datasets. Questions: What are the parameters when classifying a person's race_name as "unknown"? Additionally, why is there a substantial jump in fatalities per day with unknown races, specifically beginning in 2020
