@@ -1,10 +1,8 @@
 ---
-title: "main"
+title: "Stat107 Project"
 format: html
 editor: visual
 ---
-
-# Stat107 Project
 
 ## Group: LCSB
 
@@ -312,6 +310,68 @@ barplot(BLM_Covid$`Percent of officers with turned on body camera`,
 legend("topright", legend = time_period , col = colors, pch = 16) 
 # another option changing lables into x axis 
 ```
+
+```{r}
+#| code-fold: true
+shootings_period$age <- as.numeric(as.character(shootings_period$age))
+during_covid$age <- as.numeric(as.character(during_covid$age))
+FatalShootingsStats$age <- as.numeric(as.character(FatalShootingsStats$age))
+# Add AgeRange dynamically to each dataset
+shootings_period$AgeRange <- cut(
+  shootings_period$age,
+  breaks = c(0, 18, 35, Inf),
+  labels = c("0-18", "19-35", "36+"),
+  right = FALSE
+)
+during_covid$AgeRange <- cut(
+  during_covid$age,
+  breaks = c(0, 18, 35, Inf),
+  labels = c("0-18", "19-35", "36+"),
+  right = FALSE
+)
+FatalShootingsStats$AgeRange <- cut(
+  FatalShootingsStats$age,
+  breaks = c(0, 18, 35, Inf),
+  labels = c("0-18", "19-35", "36+"),
+  right = FALSE
+)
+
+# Add a dataset column for identification
+shootings_period$Dataset <- "BLM"
+during_covid$Dataset <- "COVID"
+FatalShootingsStats$Dataset <- "Entire Database"
+
+# Combine datasets into one
+combined_data <- bind_rows(shootings_period, during_covid, FatalShootingsStats)
+
+# Calculate proportions
+summary_data <- combined_data %>%
+  group_by(Dataset, AgeRange) %>%
+  summarise(Count = n(), .groups = "drop") %>%
+  group_by(Dataset) %>%
+  mutate(Proportion = Count / sum(Count))
+
+# Create a stacked bar graph with proportions
+ggplot(summary_data, aes(x = Dataset, y = Proportion, fill = AgeRange)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_text(
+    aes(label = scales::percent(Proportion, accuracy = 0.1)), # Format as percentage
+    position = position_stack(vjust = 0.5), # Place text in the middle of each segment
+    size = 3 # Adjust text size
+  ) +
+  labs(
+    title = "Age Range Proportion Across Datasets",
+    x = "Dataset",
+    y = "Proportion",
+    fill = "Age Range"
+  ) +
+  scale_y_continuous(labels = scales::percent_format()) + # Display y-axis as percentages
+  theme_minimal()
+```
+
+
+# Race Statistics
+
 
 ```{r}
 #| code-fold: true
