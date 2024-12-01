@@ -32,43 +32,11 @@ FatalShootingsStats$year <- as.integer(format(FatalShootingsStats$date, "%Y"))
 
 ## Event 1: Black Lives Matter Movement
 
-```{r}
-#| code-fold: true
-library(dplyr)
-library(ggplot2)
-
-FatalShootingsStats$age <- as.numeric(as.character(FatalShootingsStats$age))
-
-# Create AgeRange dynamically
-FatalShootingsStats$AgeRange <- cut(
-  FatalShootingsStats$age,
-  breaks = c(0, 18, 35, Inf), # Define age range intervals
-  labels = c("0-18", "19-35", "36+"),
-  right = FALSE # Makes intervals inclusive on the left
-)
-
-# Summarize data to count individuals by Race and AgeRange
-summary_data <- FatalShootingsStats %>%
-  group_by(race, AgeRange) %>%
-  summarise(Count = n(), .groups = "drop")
-
-# Create the bar plot
-ggplot(FatalShootingsStats, aes(x = race_name, y = age, fill = AgeRange)) +
-  geom_bar(stat = "identity", position = "dodge") + # Position bars side by side
-  labs(
-    title = "Bar Plot of Races by Age Range",
-    x = "Race",
-    y = "Count"
-  ) +
-  scale_fill_brewer(palette = "Set2") + # Optional color palette
-  theme_minimal() # Clean theme
-
-```
-
 On May 25, 2020, George Floyd, a Black man living in Minneapolis, Minnesota was brutally killed by a Minneapolis police officer. This sparked a new peak in the Black Lives Matter (BLM) movement, where there was a new wave of both peaceful protests and riots. The peak of the BLM riots, vandalism, arson and looting occurred from May 26th to June 8th in 2020. During these 2 weeks, were fatal shootings higher than normal?
 
 ```{r}
 #| code-fold: true
+library(dplyr)
 # Convert the 'Date' column to Date type if it isn't already
 FatalShootingsStats$date <- as.Date(FatalShootingsStats$date, format = "%Y-%m-%d")  # Adjust format if needed
 
@@ -455,6 +423,36 @@ for (i in 1:length(unique_races)) {
 
 # add a legend
 legend("topright", legend = unique_races, col = race_colors, pch = 16, lty = 1)
+```
+
+```{r}
+#| code-fold: true
+
+FatalShootingsStats$age <- as.numeric(as.character(FatalShootingsStats$age))
+
+# Create AgeRange dynamically
+FatalShootingsStats$AgeRange <- cut(
+  FatalShootingsStats$age,
+  breaks = c(0, 18, 35, Inf), # Define age range intervals
+  labels = c("0-18", "19-35", "36+"),
+  right = FALSE # Makes intervals inclusive on the left
+)
+
+# Summarize data to count individuals by Race and AgeRange
+summary_data <- FatalShootingsStats %>%
+  group_by(race, AgeRange) %>%
+  summarise(Count = n(), .groups = "drop")
+
+# Create the bar plot
+ggplot(FatalShootingsStats, aes(x = race_name, y = age, fill = AgeRange)) +
+  geom_bar(stat = "identity", position = "dodge") + # Position bars side by side
+  labs(
+    title = "Bar Plot of Races by Age Range",
+    x = "Race",
+    y = "Count"
+  ) +
+  scale_fill_brewer(palette = "Set2") + # Optional color palette
+  theme_minimal() # Clean theme
 ```
 
 Findings: During peak BLM movement periods, the percentage of officers with turned-on body cameras increases from approximately 14% to 21%. Additionally, there is a positive correlation between average fatalities per day and the percentage of turned-on body cameras throughout all highlighted datasets. Questions: What are the parameters when classifying a person's race_name as "unknown"? Additionally, why is there a substantial jump in fatalities per day with unknown races, specifically beginning in 2020
