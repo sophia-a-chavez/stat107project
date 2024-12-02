@@ -404,6 +404,23 @@ par(mar = c(5, 4, 4, 2) + 0.1)
 The graph demonstrates a wide percentages of fatalities by race, revealing the disparities in police-related fatalities among racial group. Black and Hispanic individuals have higher percentages of unarmed deaths to compared to other racial group representing the systemic biases in the police force. Native Americans show a disproportionate portion relative to their population size, showing their vulnerability to police forces.
 
 ```{r}
+# Check if the required columns exist
+if (!all(c("year", "race_name") %in% colnames(FatalShootingsStats))) {
+  stop("The columns 'year' and 'race_name' are missing in FatalShootingsStats.")
+}
+
+# Aggregate data to create race_year_counts
+race_year_counts <- FatalShootingsStats %>%
+  group_by(Year = year, Race = race_name) %>%  # Group by year and race
+  summarise(Count = n(), .groups = "drop")    # Count occurrences and ungroup
+
+# Ensure data completeness: Fill missing Year-Race combinations with zeros
+race_year_counts <- race_year_counts %>%
+  complete(Year, Race, fill = list(Count = 0))  # Fill missing combinations with 0 counts
+
+# Verify the resulting dataset
+print(head(race_year_counts))
+
 # Ensure the dataset has the required columns: Year, Race, Count
 # If not, aggregate data to create race_year_counts
 if (!"Count" %in% colnames(race_year_counts)) {
