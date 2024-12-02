@@ -61,5 +61,8 @@ Our group investigates the pattern and disparties of Fatal Police Shootings in t
 ##### Conclusion \~
 
 -   What did we expect? What actually happened?
+
+We expected to find strong correlations between the political and social environment and the trends of fatal police shooting in the United States.
+
 -   Were there any correlations between the current political/social climate and the reported fatal police shootings in the United States?
 

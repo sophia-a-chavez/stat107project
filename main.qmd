@@ -166,34 +166,6 @@ cat("After the lockdowns: Total shootings ",total_shootings_after," Average shoo
 
 ```
 
-```{r}
-#| code-fold: true
-state_to_highlight <- c("Arkansas", "Iowa", "Nebraska", "North Dakota", "South Dakota", "Utah", "Wyomming") #sates that never enforced lockdown
-# Basic Map Plot
-
-maps::map("state", col = "lightgray", fill = TRUE, bg = "white", lwd = 0.2)  
-maps::map("state", region = state_to_highlight, col = "lightblue", fill = TRUE, add = TRUE)
-points(before_covid$longitude, before_covid$latitude, col = "black", pch = 20, cex = 1.0)
-legend("bottomright", legend = "Fatal Shooting", pch = 20, col = "black", cex = 0.5)
-legend("bottomleft", legend = "No Manditory Lockdown", fill= "lightblue", col = "lightblue", cex = 1)
-title(main= "Before Covid-19 Lockdown")
-
-maps::map("state", col = "lightgray", fill = TRUE, bg = "white", lwd = 0.2) 
-maps::map("state", region = state_to_highlight, col = "lightblue", fill = TRUE, add = TRUE)
-points(during_covid$longitude, during_covid$latitude, col = "black", pch = 20, cex = 1.0)
-legend("bottomright", legend = "Fatal Shooting", pch = 20, col = "black", cex = 0.5)
-legend("bottomleft", legend = "No Manditory Lockdown", fill= "lightblue", col = "lightblue", cex = 1)
-title(main= "During Covid-19 Lockdown")
-
-maps::map("state", col = "lightgray", fill = TRUE, bg = "white", lwd = 0.2)  
-maps::map("state", region = state_to_highlight, col = "lightblue", fill = TRUE, add = TRUE)
-points(after_covid$longitude, after_covid$latitude, col = "black", pch = 20, cex = 1.0)
-legend("bottomright", legend = "Fatal Shooting", pch = 20, col = "black", cex = 0.7)
-legend("bottomleft", legend = "No Manditory Lockdown", fill= "lightblue", col = "lightblue", cex = 1)
-title( "After Covid-19 Lockdown")
-
-```
-
 Map Visual Note: It’s important to remember the fatal shootings dataset has more data points before the COVID-19 pandemic compared to after. The higher density of shootings before the COVID-19 lockdowns can be linked to the skewed dataset/states with higher population
 
 ```{r}
@@ -224,10 +196,6 @@ cat("Shootings per day during COVID-19 in states with no enforced lockdowns",sta
 ```
 
 We expect the total number of fatal shootings will decrease during the enforced lockdown period due to the decreased social gatherings. However, our results show a different pattern, in fact we can see that there was no significant drop in the number of average shootings per day before and during lockdowns. Additionally, we can see that during and before COVID-19 lockdowns, the number of fatal shootings decreased in both states with and without enforced lockdowns. The decreased number of shootings in non-enforced lockdown states may be attributed to the overall decreased spatial mobility in the US. Numerous households voluntarily quarantined regardless of their state's COVID-19 restrictions. Because we can identify a slight decreasing pattern in our data, we can conclude that the COVID-19 pandemic had little to no significant impact on the overall number of Police fatal shootings.
-
-```{r}
-
-```
 
 # Fatal Shootings Dataset Analytics/ Compairing Event 1 and 2
 
@@ -433,57 +401,52 @@ par(mar = c(5, 4, 4, 2) + 0.1)
 
 # i think this code can be reused if we make the x axis the time period and show unarmed/armed deaths per race - sophia
 ```
+The graph demonstrates a wide percentages of fatalities by race, revealing the disparities in police-related fatalities among racial group. Black and Hispanic individuals have higher percentages of unarmed deaths to compared to other racial group representing the systemic biases in the police force. Native Americans show a disproportionate portion relative to their population size, showing their vulnerability to police forces.
 
 ```{r}
-#| code-fold: true
-# aggregate data by year and race_name
-race_year_counts <- aggregate(FatalShootingsStats$race_name, 
-                              by = list(Year = FatalShootingsStats$year, 
-                                        Race = FatalShootingsStats$race_name), 
-                      FUN = length)
-colnames(race_year_counts)[3] <- "Count"
+# Ensure the dataset has the required columns: Year, Race, Count
+# If not, aggregate data to create race_year_counts
+if (!"Count" %in% colnames(race_year_counts)) {
+  race_year_counts <- FatalShootingsStats %>%
+    group_by(Year = year, Race = race_name) %>%
+    summarise(Count = n(), .groups = "drop")
+}
 
-# create a matrix to store counts for each race across years
-race_counts_matrix <- xtabs(Count ~ Race + Year, data = race_year_counts)
+# Ensure data completeness: fill missing values with zeros for all combinations of Year and Race
+race_year_counts <- race_year_counts %>%
+  complete(Year, Race, fill = list(Count = 0))
 
-# set up colors for each race
-colors <- c("lightblue", "lightgreen", "lightcoral", "lightpink", "wheat", "lavender", "gray")
-
-# creating bar plot
-barplot(race_counts_matrix, beside = TRUE, col = colors,
-        main = "Fatal Shootings by Race and Year",
-        xlab = "Year", ylab = "Number of Fatal Shootings", 
-        legend.text = rownames(race_counts_matrix), 
-        args.legend = list(x = "topright", inset = c(-0.05, 0)), ylim = c(0,1200))
-
-```
-
-```{r}
-#| code-fold: true
-# set up an empty plot with the correct axes limits
-plot(NULL, xlim = range(race_year_counts$Year), 
-     ylim = c(0,700), 
+# Set up an empty plot with the correct axes limits
+plot(NULL, xlim = range(race_year_counts$Year, na.rm = TRUE), 
+     ylim = c(0, max(race_year_counts$Count, na.rm = TRUE)), 
      xlab = "Year", ylab = "Number of Fatal Shootings", 
      main = "Fatal Shootings by Race Over the Years")
 
-# define colors for each race
+# Define colors for each race
 race_colors <- c("blue", "green", "red", "purple", "orange", "pink", "gray")
 
-# get unique races
+# Get unique races
 unique_races <- unique(race_year_counts$Race)
 
-# loop through each race to plot its line on the graph
+# Loop through each race to plot its line on the graph
 for (i in 1:length(unique_races)) {
   # Subset data for the current race
   race_data <- subset(race_year_counts, Race == unique_races[i])
   
-  # plot the line for this race
+  # Ensure data is sorted by Year for proper line plotting
+  race_data <- race_data[order(race_data$Year), ]
+  
+  # Plot the line for this race
   lines(race_data$Year, race_data$Count, type = "o", col = race_colors[i], pch = 16)
 }
 
-# add a legend
+# Add a legend
 legend("topright", legend = unique_races, col = race_colors, pch = 16, lty = 1)
+
 ```
+A general trend is the decline in number of fatal shooting over the years, particularly 2020-2022 probably due to the pandemic reforming public interaction in police enforcement. The height of shootings in 2020 is likely caused from the Black Lives Matter movement
+
+
 
 ```{r}
 #| code-fold: true
