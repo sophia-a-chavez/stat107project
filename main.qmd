@@ -223,7 +223,7 @@ cat("Shootings per day during COVID-19 in states with no enforced lockdowns",sta
 
 We expect the total number of fatal shootings will decrease during the enforced lockdown period due to the decreased social gatherings. However, our results show a different pattern, in fact we can see that there was no significant drop in the number of average shootings per day before and during lockdowns. Additionally, we can see that during and before COVID-19 lockdowns, the number of fatal shootings decreased in both states with and without enforced lockdowns. The decreased number of shootings in non-enforced lockdown states may be attributed to the overall decreased spatial mobility in the US. Numerous households voluntarily quarantined regardless of their state's COVID-19 restrictions. Because we can identify a slight decreasing pattern in our data, we can conclude that the COVID-19 pandemic had little to no significant impact on the overall number of Police fatal shootings.
 
-# **Fatal Shootings Dataset Analytics/ Comparing Event 1 and 2**
+# **Fatal Shootings Dataset Analytics / Comparing Event 1 and 2**
 
 ```{r}
 #| code-fold: true
@@ -283,13 +283,14 @@ barplot(BLM_Covid$`Average Fatal Shootings Per Day`,
         col = colors,
         main = "Average Fatal Shootings Per Day",
         xlab = "Time Period", ylim = c(0,4.5) )
-legend("topright", legend = time_period , col = colors, pch = 16 ) #TO FIX make sure legend is not on top of figure
+legend("topright", legend = time_period , col = colors, pch = 16 ) 
+
 #armed (gun)
 time_period <- c("BLM", "COVID", "Entire Database")
 colors <- c("lightblue", "lightgreen", "lightcoral")
 barplot(BLM_Covid$`Armed (gun)`, 
         col = colors,
-        main = "Percent of shooting victims Armed(GUN) ",
+        main = "Percent of Shooting Victims Armed (GUN) ",
         xlab = "Time Period", ylim = c(0,1))
 legend("topright", legend = time_period , col = colors, pch = 16 ) 
 #
@@ -297,7 +298,7 @@ time_period <- c("BLM", "COVID", "Entire Database")
 colors <- c("lightblue", "lightgreen", "lightcoral")
 barplot(BLM_Covid$`Percent of officers with turned on body camera`, 
         col = colors,
-        main = "Percent of officers with turned on body camera",
+        main = "Percentage of Officers with Turned on Body Camera",
         xlab = "Time Period", ylim = c(0,0.5))
 legend("topright", legend = time_period , col = colors, pch = 16) 
 # another option changing lables into x axis 
@@ -365,7 +366,7 @@ ggplot(summary_data, aes(x = Dataset, y = Proportion, fill = AgeRange)) +
 
 During peak BLM movement periods, the percentage of officers with turned-on body cameras increases from approximately 14% to 21%. Additionally, there is a positive correlation between average fatalities per day and the percentage of turned-on body cameras throughout all highlighted datasets.
 
-Also, as we can see during the two week peak of the BLM protests and riots, there was an increase from approximately 48% to 61% in fatal shootings of people who were over the age of 36. This increase tells us that most of the people who were part of these protests and riots were on the older side. This is somewhat surprising since according to Statista, a German online platform that provides data on a wide range of topics, most people that strongly agreed with the protest were between the age of 18 and 34. This was shown in a graph that shows the "level of support among U.S. adults for the protests in response to the death of George Floyd as of June 2020, by age" [Link for said graph](https://www.statista.com/statistics/1122591/support-george-floyd-protests-us-age/).
+Also, as we can see during the two week peak of the BLM protests and riots, there was an increase from approximately 48% to 61% in fatal shootings of people who were over the age of 36. This increase tells us that most of the people who were part of these protests and riots were on the older side. This is somewhat surprising since according to Statista, a German online platform that provides data on a wide range of topics, most people that strongly agreed with the protest were between the age of 18 and 34. This was shown in a graph that shows the "level of support among U.S. adults for the protests in response to the death of George Floyd as of June 2020, by age." [Link for said graph](https://www.statista.com/statistics/1122591/support-george-floyd-protests-us-age/).
 
 # **Race Statistics**
 
