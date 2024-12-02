@@ -175,12 +175,20 @@ points(before_covid$longitude, before_covid$latitude, col = "black", pch = 20, c
 legend("bottomright", legend = "Fatal Shooting", pch = 20, col = "black", cex = 0.5)
 legend("bottomleft", legend = "No Manditory Lockdown", fill= "lightblue", col = "lightblue", cex = 1)
 title(main= "Before Covid-19 Lockdown")
+
 maps::map("state", col = "lightgray", fill = TRUE, bg = "white", lwd = 0.2) 
 maps::map("state", region = state_to_highlight, col = "lightblue", fill = TRUE, add = TRUE)
 points(during_covid$longitude, during_covid$latitude, col = "black", pch = 20, cex = 1.0)
 legend("bottomright", legend = "Fatal Shooting", pch = 20, col = "black", cex = 0.5)
 legend("bottomleft", legend = "No Manditory Lockdown", fill= "lightblue", col = "lightblue", cex = 1)
 title(main= "During Covid-19 Lockdown")
+
+maps::map("state", col = "lightgray", fill = TRUE, bg = "white", lwd = 0.2)  
+maps::map("state", region = state_to_highlight, col = "lightblue", fill = TRUE, add = TRUE)
+points(after_covid$longitude, after_covid$latitude, col = "black", pch = 20, cex = 1.0)
+legend("bottomright", legend = "Fatal Shooting", pch = 20, col = "black", cex = 0.7)
+legend("bottomleft", legend = "No Manditory Lockdown", fill= "lightblue", col = "lightblue", cex = 1)
+title( "After Covid-19 Lockdown")
 ```
 
 Map Visual Note: It’s important to remember the fatal shootings dataset has more data points before the COVID-19 pandemic compared to after. The higher density of shootings before the COVID-19 lockdowns can be linked to the skewed dataset/states with higher population
