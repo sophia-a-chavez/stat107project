@@ -515,4 +515,10 @@ ggplot(FatalShootingsStats, aes(x = race_name, y = age, fill = AgeRange)) +
   theme_minimal() # Clean theme
 ```
 
-Findings: During peak BLM movement periods, the percentage of officers with turned-on body cameras increases from approximately 14% to 21%. Additionally, there is a positive correlation between average fatalities per day and the percentage of turned-on body cameras throughout all highlighted datasets. Questions: What are the parameters when classifying a person's race_name as "unknown"? Additionally, why is there a substantial jump in fatalities per day with unknown races, specifically beginning in 2020
+Findings: During peak BLM movement periods, the percentage of officers with turned-on body cameras increases from approximately 14% to 21%. Additionally, there is a positive correlation between average fatalities per day and the percentage of turned-on body cameras throughout all highlighted datasets. 
+
+Questions: 
+  - What did we expect? What actually happened?
+  - What are the parameters when classifying a person's race_name as "unknown"? 
+  - Why is there a substantial jump in fatalities per day with unknown races, specifically beginning in 2020? 
+  - Were there any correlations between the current political/social climate and the reported fatal police shootings in the United States?
