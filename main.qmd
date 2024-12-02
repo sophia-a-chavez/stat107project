@@ -28,7 +28,7 @@ FatalShootingsStats$year <- as.integer(format(FatalShootingsStats$date, "%Y"))
 
 ```
 
-## Event 1: Black Lives Matter Movement
+## **Event 1: Black Lives Matter Movement**
 
 On May 25, 2020, George Floyd, a Black man living in Minneapolis, Minnesota was brutally killed by a Minneapolis police officer. This sparked a new peak in the Black Lives Matter (BLM) movement, where there was a new wave of both peaceful protests and riots. The peak of the BLM riots, vandalism, arson and looting occurred from May 26th to June 8th in 2020. During these 2 weeks, were fatal shootings higher than normal?
 
@@ -166,7 +166,25 @@ cat("After the lockdowns: Total shootings ",total_shootings_after," Average shoo
 
 ```
 
+```{r}
+state_to_highlight <- c("Arkansas", "Iowa", "Nebraska", "North Dakota", "South Dakota", "Utah", "Wyomming") #sates that never enforced lockdown
+# Basic Map Plot
+maps::map("state", col = "lightgray", fill = TRUE, bg = "white", lwd = 0.2)  
+maps::map("state", region = state_to_highlight, col = "lightblue", fill = TRUE, add = TRUE)
+points(before_covid$longitude, before_covid$latitude, col = "black", pch = 20, cex = 1.0)
+legend("bottomright", legend = "Fatal Shooting", pch = 20, col = "black", cex = 0.5)
+legend("bottomleft", legend = "No Manditory Lockdown", fill= "lightblue", col = "lightblue", cex = 1)
+title(main= "Before Covid-19 Lockdown")
+maps::map("state", col = "lightgray", fill = TRUE, bg = "white", lwd = 0.2) 
+maps::map("state", region = state_to_highlight, col = "lightblue", fill = TRUE, add = TRUE)
+points(during_covid$longitude, during_covid$latitude, col = "black", pch = 20, cex = 1.0)
+legend("bottomright", legend = "Fatal Shooting", pch = 20, col = "black", cex = 0.5)
+legend("bottomleft", legend = "No Manditory Lockdown", fill= "lightblue", col = "lightblue", cex = 1)
+title(main= "During Covid-19 Lockdown")
+```
+
 Map Visual Note: It’s important to remember the fatal shootings dataset has more data points before the COVID-19 pandemic compared to after. The higher density of shootings before the COVID-19 lockdowns can be linked to the skewed dataset/states with higher population
+
 
 ```{r}
 #| code-fold: true
@@ -197,7 +215,7 @@ cat("Shootings per day during COVID-19 in states with no enforced lockdowns",sta
 
 We expect the total number of fatal shootings will decrease during the enforced lockdown period due to the decreased social gatherings. However, our results show a different pattern, in fact we can see that there was no significant drop in the number of average shootings per day before and during lockdowns. Additionally, we can see that during and before COVID-19 lockdowns, the number of fatal shootings decreased in both states with and without enforced lockdowns. The decreased number of shootings in non-enforced lockdown states may be attributed to the overall decreased spatial mobility in the US. Numerous households voluntarily quarantined regardless of their state's COVID-19 restrictions. Because we can identify a slight decreasing pattern in our data, we can conclude that the COVID-19 pandemic had little to no significant impact on the overall number of Police fatal shootings.
 
-# Fatal Shootings Dataset Analytics/ Compairing Event 1 and 2
+# **Fatal Shootings Dataset Analytics/ Compairing Event 1 and 2**
 
 ```{r}
 #| code-fold: true
@@ -248,7 +266,6 @@ rownames(BLM_Covid) <- c("BLM", "Covid-19", "Entire Dataset")
 BLM_Covid
 ```
 
-hat
 
 ```{r}
 #| code-fold: true
@@ -337,9 +354,14 @@ ggplot(summary_data, aes(x = Dataset, y = Proportion, fill = AgeRange)) +
   theme_minimal()
 ```
 
+**Findings:** 
 
-# Race Statistics
+During peak BLM movement periods, the percentage of officers with turned-on body cameras increases from approximately 14% to 21%. Additionally, there is a positive correlation between average fatalities per day and the percentage of turned-on body cameras throughout all highlighted datasets.
 
+Also, as we can see during the two week peak of the BLM protests and riots, there was an increase from approximately 48% to 61% in fatal shootings of people who were over the age of 36. This increase tells us that most of the people who were part of these protests and riots were on the older side. This is somewhat surprising since according to Statista, a German online platform that provides data on a wide range of topics, most people that strongly agreed with the protest were between the age of 18 and 34. This was shown in a graph that shows the "level of support among U.S. adults for the protests in response to the death of George Floyd as of June 2020, by age" [Link for said graph](https://www.statista.com/statistics/1122591/support-george-floyd-protests-us-age/).
+
+
+# **Race Statistics**
 
 ```{r}
 #| code-fold: true
@@ -401,9 +423,12 @@ par(mar = c(5, 4, 4, 2) + 0.1)
 
 # i think this code can be reused if we make the x axis the time period and show unarmed/armed deaths per race - sophia
 ```
+
 The graph demonstrates a wide percentages of fatalities by race, revealing the disparities in police-related fatalities among racial group. Black and Hispanic individuals have higher percentages of unarmed deaths to compared to other racial group representing the systemic biases in the police force. Native Americans show a disproportionate portion relative to their population size, showing their vulnerability to police forces.
 
+
 ```{r}
+#| code-fold: true
 # Check if the required columns exist
 if (!all(c("year", "race_name") %in% colnames(FatalShootingsStats))) {
   stop("The columns 'year' and 'race_name' are missing in FatalShootingsStats.")
@@ -461,8 +486,8 @@ for (i in 1:length(unique_races)) {
 legend("topright", legend = unique_races, col = race_colors, pch = 16, lty = 1)
 
 ```
-A general trend is the decline in number of fatal shooting over the years, particularly 2020-2022 probably due to the pandemic reforming public interaction in police enforcement. The height of shootings in 2020 is likely caused from the Black Lives Matter movement
 
+A general trend is the decline in number of fatal shooting over the years, particularly 2020-2022 probably due to the pandemic reforming public interaction in police enforcement. The height of shootings in 2020 is likely caused from the Black Lives Matter movement
 
 
 ```{r}
@@ -495,7 +520,6 @@ ggplot(FatalShootingsStats, aes(x = race_name, y = age, fill = AgeRange)) +
   theme_minimal() # Clean theme
 ```
 
-Findings: During peak BLM movement periods, the percentage of officers with turned-on body cameras increases from approximately 14% to 21%. Additionally, there is a positive correlation between average fatalities per day and the percentage of turned-on body cameras throughout all highlighted datasets. 
 
 Questions: 
   - What did we expect?
