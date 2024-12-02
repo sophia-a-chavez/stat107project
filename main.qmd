@@ -15,7 +15,8 @@ Our group will analyze a dataset containing the reported fatal police shootings 
 ```{r}
 #| code-fold: true
 FatalShootingsStats <- read.csv("FatalPoliceShootings_US.csv")
-head(FatalShootingsStats, 2)
+x <-head(FatalShootingsStats, 2)
+print(x)
 ```
 
 ```{r}
@@ -34,7 +35,7 @@ On May 25, 2020, George Floyd, a Black man living in Minneapolis, Minnesota was 
 
 ```{r}
 #| code-fold: true
-library(dplyr)
+suppressPackageStartupMessages(library(dplyr))
 # Convert the 'Date' column to Date type if it isn't already
 FatalShootingsStats$date <- as.Date(FatalShootingsStats$date, format = "%Y-%m-%d")  # Adjust format if needed
 
@@ -120,8 +121,8 @@ On January 5th, 2020, the CDC’s National Center for Immunization and Respirato
 ```{r}
 #| code-fold: true
 library(maps)
+suppressPackageStartupMessages(library(tidyverse))
 
-library(tidyverse)
 library(dplyr)
 library(ggplot2)
 
@@ -192,7 +193,6 @@ title( "After Covid-19 Lockdown")
 ```
 
 Map Visual Note: It’s important to remember the fatal shootings dataset has more data points before the COVID-19 pandemic compared to after. The higher density of shootings before the COVID-19 lockdowns can be linked to the skewed dataset/states with higher population
-
 
 ```{r}
 #| code-fold: true
@@ -274,7 +274,6 @@ rownames(BLM_Covid) <- c("BLM", "Covid-19", "Entire Dataset")
 BLM_Covid
 ```
 
-
 ```{r}
 #| code-fold: true
 # showing interesting data points
@@ -283,7 +282,7 @@ colors <- c("lightblue", "lightgreen", "lightcoral")
 barplot(BLM_Covid$`Average Fatal Shootings Per Day`, 
         col = colors,
         main = "Average Fatal Shootings Per Day",
-        xlab = "Time Period",  )
+        xlab = "Time Period", ylim = c(0,4.5) )
 legend("topright", legend = time_period , col = colors, pch = 16 ) #TO FIX make sure legend is not on top of figure
 #armed (gun)
 time_period <- c("BLM", "COVID", "Entire Database")
@@ -299,7 +298,7 @@ colors <- c("lightblue", "lightgreen", "lightcoral")
 barplot(BLM_Covid$`Percent of officers with turned on body camera`, 
         col = colors,
         main = "Percent of officers with turned on body camera",
-        xlab = "Time Period", ylim = c(0,1))
+        xlab = "Time Period", ylim = c(0,0.5))
 legend("topright", legend = time_period , col = colors, pch = 16) 
 # another option changing lables into x axis 
 ```
@@ -362,12 +361,11 @@ ggplot(summary_data, aes(x = Dataset, y = Proportion, fill = AgeRange)) +
   theme_minimal()
 ```
 
-**Findings:** 
+**Findings:**
 
 During peak BLM movement periods, the percentage of officers with turned-on body cameras increases from approximately 14% to 21%. Additionally, there is a positive correlation between average fatalities per day and the percentage of turned-on body cameras throughout all highlighted datasets.
 
 Also, as we can see during the two week peak of the BLM protests and riots, there was an increase from approximately 48% to 61% in fatal shootings of people who were over the age of 36. This increase tells us that most of the people who were part of these protests and riots were on the older side. This is somewhat surprising since according to Statista, a German online platform that provides data on a wide range of topics, most people that strongly agreed with the protest were between the age of 18 and 34. This was shown in a graph that shows the "level of support among U.S. adults for the protests in response to the death of George Floyd as of June 2020, by age" [Link for said graph](https://www.statista.com/statistics/1122591/support-george-floyd-protests-us-age/).
-
 
 # **Race Statistics**
 
@@ -434,7 +432,6 @@ par(mar = c(5, 4, 4, 2) + 0.1)
 
 The graph demonstrates a wide percentages of fatalities by race, revealing the disparities in police-related fatalities among racial group. Black and Hispanic individuals have higher percentages of unarmed deaths to compared to other racial group representing the systemic biases in the police force. Native Americans show a disproportionate portion relative to their population size, showing their vulnerability to police forces.
 
-
 ```{r}
 #| code-fold: true
 # Check if the required columns exist
@@ -468,7 +465,7 @@ race_year_counts <- race_year_counts %>%
 
 # Set up an empty plot with the correct axes limits
 plot(NULL, xlim = range(race_year_counts$Year, na.rm = TRUE), 
-     ylim = c(0, max(race_year_counts$Count, na.rm = TRUE)), 
+     ylim = c(0, 600), 
      xlab = "Year", ylab = "Number of Fatal Shootings", 
      main = "Fatal Shootings by Race Over the Years")
 
@@ -491,12 +488,11 @@ for (i in 1:length(unique_races)) {
 }
 
 # Add a legend
-legend("topright", legend = unique_races, col = race_colors, pch = 16, lty = 1)
+legend("topright", legend = unique_races, col = race_colors, pch = 16, lty = 1, xpd = TRUE)
 
 ```
 
 A general trend is the decline in number of fatal shooting over the years, particularly 2020-2022 probably due to the pandemic reforming public interaction in police enforcement. The height of shootings in 2020 is likely caused from the Black Lives Matter movement
-
 
 ```{r}
 #| code-fold: true
@@ -528,10 +524,4 @@ ggplot(FatalShootingsStats, aes(x = race_name, y = age, fill = AgeRange)) +
   theme_minimal() # Clean theme
 ```
 
-
-Questions: 
-  - What did we expect?
-  - What actually happened?
-  - What are the parameters when classifying a person's race_name as "unknown"? 
-  - Why is there a substantial jump in fatalities per day with unknown races, specifically beginning in 2020? 
-  - Were there any correlations between the current political/social climate and the reported fatal police shootings in the United States?
+Questions: - What did we expect? - What actually happened? - What are the parameters when classifying a person's race_name as "unknown"? - Why is there a substantial jump in fatalities per day with unknown races, specifically beginning in 2020? - Were there any correlations between the current political/social climate and the reported fatal police shootings in the United States?
