@@ -223,7 +223,7 @@ cat("Shootings per day during COVID-19 in states with no enforced lockdowns",sta
 
 ```
 
-We expect the total number of fatal shootings will decrease during the enforced lockdown period due to the decreased social gatherings. However, our results show a different pattern, in fact we can see that there was no significant drop in the number of average shootings per day before and during lockdowns. Additionally, we can see that during and before COVID-19 lockdowns, the number of fatal shootings decreased in both states with and without enforced lockdowns. The decreased number of shootings in non-enforced lockdown states may be attributed to the overall decreased spatial mobility in the US. Numerous households voluntarily quarantined regardless of their state's COVID-19 restrictions. Because we can identify a slight decreasing pattern in our data, we can conclude that the COVID-19 pandemic had little to no significant impact on the overall number of Pollice fatal shootings.
+We expect the total number of fatal shootings will decrease during the enforced lockdown period due to the decreased social gatherings. However, our results show a different pattern, in fact we can see that there was no significant drop in the number of average shootings per day before and during lockdowns. Additionally, we can see that during and before COVID-19 lockdowns, the number of fatal shootings decreased in both states with and without enforced lockdowns. The decreased number of shootings in non-enforced lockdown states may be attributed to the overall decreased spatial mobility in the US. Numerous households voluntarily quarantined regardless of their state's COVID-19 restrictions. Because we can identify a slight decreasing pattern in our data, we can conclude that the COVID-19 pandemic had little to no significant impact on the overall number of Police fatal shootings.
 
 ```{r}
 
@@ -518,7 +518,8 @@ ggplot(FatalShootingsStats, aes(x = race_name, y = age, fill = AgeRange)) +
 Findings: During peak BLM movement periods, the percentage of officers with turned-on body cameras increases from approximately 14% to 21%. Additionally, there is a positive correlation between average fatalities per day and the percentage of turned-on body cameras throughout all highlighted datasets. 
 
 Questions: 
-  - What did we expect? What actually happened?
+  - What did we expect?
+  - What actually happened?
   - What are the parameters when classifying a person's race_name as "unknown"? 
   - Why is there a substantial jump in fatalities per day with unknown races, specifically beginning in 2020? 
   - Were there any correlations between the current political/social climate and the reported fatal police shootings in the United States?
