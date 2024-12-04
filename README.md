@@ -28,7 +28,7 @@ Our group investigates the pattern and disparities of Fatal Police Shootings in 
 
 -   The average ages of victims in fatal shootings were mostly consistent throughout this time, with an average range of 36.6 to 38.1 years old.
 
--   It seems that the total number of fatal shootings were much higher without the presense of body cameras.
+-   It seems that the total number of fatal shootings were much higher without the presence of body cameras.
 
 ##### Conclusion \~
 
@@ -37,3 +37,13 @@ Our group investigates the pattern and disparities of Fatal Police Shootings in 
 We expected to find strong correlations between the political and social environment and the trends of fatal police shooting in the United States.
 
 -   Were there any correlations between the current political/social climate and the reported fatal police shootings in the United States?
+
+#### Packages \~
+
+-   dplyr
+
+-   maps
+
+-   tidyverse
+
+-   ggplot2
