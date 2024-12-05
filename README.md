@@ -48,6 +48,10 @@ COVID-19
 
 Kettl, Donald F. “States Divided: The Implications of American Federalism for Covid-19.” *Public Administration Review*, U.S. National Library of Medicine, 2020, pmc.ncbi.nlm.nih.gov/articles/PMC7280573/#:\~:text=By%20the%20end%20of%20March,at%20all%20(Ballotopedia%202020).
 
+BLM
+
+Walters, Joanna. “George Floyd Protests: The US Cities That Became Hotspots of Unrest.” *The Guardian*, Guardian News and Media, 31 May 2020, www.theguardian.com/us-news/2020/may/31/george-floyd-protests-us-cities-hotspots-unrest.
+
 #### Packages \~
 
 -   dplyr
