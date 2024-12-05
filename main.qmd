@@ -221,7 +221,130 @@ cat("Shootings per day during COVID-19 in states with no enforced lockdowns",sta
 
 We expect the total number of fatal shootings will decrease during the enforced lockdown period due to the decreased social gatherings. However, our results show a different pattern, in fact we can see that there was no significant drop in the number of average shootings per day before and during lockdowns. Additionally, we can see that during and before COVID-19 lockdowns, the number of fatal shootings decreased in both states with and without enforced lockdowns. The decreased number of shootings in non-enforced lockdown states may be attributed to the overall decreased spatial mobility in the US. Numerous households voluntarily quarantined regardless of their state's COVID-19 restrictions. Because we can not identify a significant decreasing pattern in our data, we can not conclude whether or not the COVID-19 pandemic had an impact on the overall number of Police fatal shootings.
 
-# **Fatal Shootings Dataset Analytics / Comparing Event 1 and 2**
+## **Fatal Shootings Race Analytics** 
+
+```{r}
+# filtering data to include only unarmed incidents
+unarmed_data <- subset(FatalShootingsStats, FatalShootingsStats$armed == "unarmed")
+
+# count unarmed fatalities by race
+unarmed_deaths_by_race <- aggregate(unarmed_data$armed, 
+                                    by = list(Race = unarmed_data$race_name), 
+                                    FUN = length)
+colnames(unarmed_deaths_by_race)[2] <- "Unarmed_Deaths"
+
+# count display
+unarmed_deaths_by_race
+# count total fatalities by race
+total_deaths_by_race <- aggregate(FatalShootingsStats$armed, 
+                                  by = list(Race = FatalShootingsStats$race_name), 
+                                  FUN = length)
+
+# ensure all races are represented in unarmed deaths by race
+all_races <- unique(FatalShootingsStats$race_name)
+unarmed_deaths_by_race <- aggregate(unarmed_data$armed, 
+                                    by = list(Race = unarmed_data$race_name), 
+                                    FUN = length)
+unarmed_deaths_by_race <- merge(data.frame(Race = all_races), unarmed_deaths_by_race, 
+                                by = "Race", all.x = TRUE)
+unarmed_deaths_by_race[is.na(unarmed_deaths_by_race)] <- 0  # Replace NA with 0
+
+# merge total deaths and unarmed deaths
+race_unarmed_comparison <- merge(unarmed_deaths_by_race, total_deaths_by_race, 
+                                 by = "Race", 
+                                 suffixes = c("_Unarmed", "_Total"))
+
+# calculate percentage of unarmed fatalities for each race
+race_unarmed_comparison$Unarmed_Death_Percentage <- 
+  (race_unarmed_comparison$x_Unarmed / race_unarmed_comparison$x_Total) * 100
+
+# rename columns for clarity
+colnames(race_unarmed_comparison) <- c("Race", "Unarmed_Deaths", "Total_Deaths", "Unarmed_Death_Percentage")
+
+# display the updated data frame
+race_unarmed_comparison
+
+# adjust margins to give more space to labels
+par(mar = c(5, 10, 4, 2) + 0.1) # Increase left margin for y-axis labels
+
+# create a horizontal bar plot
+barplot(race_unarmed_comparison$Unarmed_Death_Percentage,
+names.arg = race_unarmed_comparison$Race,
+main = "Percentage of Unarmed Fatalities by Race",
+xlab = "Percentage of Unarmed Fatalities",
+col = "lightcoral",
+horiz = TRUE,       # Horizontal bars
+las = 1,            # Ensure labels are horizontal on y-axis
+cex.names = 0.9)    # Adjust label size if needed
+
+# reset margins after plotting (optional if running multiple plots in sequence)
+par(mar = c(5, 4, 4, 2) + 0.1)
+```
+
+```{r}
+# Check if the required columns exist
+if (!all(c("year", "race_name") %in% colnames(FatalShootingsStats))) {
+  stop("The columns 'year' and 'race_name' are missing in FatalShootingsStats.")
+}
+
+# Aggregate data to create race_year_counts
+race_year_counts <- FatalShootingsStats %>%
+  group_by(Year = year, Race = race_name) %>%  # Group by year and race
+  summarise(Count = n(), .groups = "drop")    # Count occurrences and ungroup
+
+# Ensure data completeness: Fill missing Year-Race combinations with zeros
+race_year_counts <- race_year_counts %>%
+  complete(Year, Race, fill = list(Count = 0))  # Fill missing combinations with 0 counts
+
+# Verify the resulting dataset
+print(head(race_year_counts))
+
+# Ensure the dataset has the required columns: Year, Race, Count
+# If not, aggregate data to create race_year_counts
+if (!"Count" %in% colnames(race_year_counts)) {
+  race_year_counts <- FatalShootingsStats %>%
+    group_by(Year = year, Race = race_name) %>%
+    summarise(Count = n(), .groups = "drop")
+}
+
+# Ensure data completeness: fill missing values with zeros for all combinations of Year and Race
+race_year_counts <- race_year_counts %>%
+  complete(Year, Race, fill = list(Count = 0))
+par(mar = c(2.1, 4.1, 4.1, 10.1), xpd=TRUE)
+# Set up an empty plot with the correct axes limits
+plot(NULL, xlim = range(race_year_counts$Year, na.rm = TRUE), 
+     ylim = c(0, 600), 
+     xlab = "Year", ylab = "Number of Fatal Shootings", 
+     main = "Fatal Shootings by Race Over the Years")
+
+# Define colors for each race
+race_colors <- c("blue", "green", "red", "purple", "orange", "pink", "gray")
+
+# Get unique races
+unique_races <- unique(race_year_counts$Race)
+
+# Loop through each race to plot its line on the graph
+for (i in 1:length(unique_races)) {
+  # Subset data for the current race
+  race_data <- subset(race_year_counts, Race == unique_races[i])
+  
+  # Ensure data is sorted by Year for proper line plotting
+  race_data <- race_data[order(race_data$Year), ]
+  
+  # Plot the line for this race
+  lines(race_data$Year, race_data$Count, type = "o", col = race_colors[i], pch = 16)
+}
+
+# Add a legend
+legend("topright", legend = unique_races, col = race_colors, pch = 16, lty = 1,inset = c(-0.4, 0))
+
+```
+
+**Findings from Fatal Shootings Race Analytics:**
+
+A general trend is the decline in number of fatal shooting over the years, particularly 2020-2022 probably due to the pandemic reforming public interaction in police enforcement. The height of shootings in 2020 is likely caused from the Black Lives Matter movement. The above bar plot demonstrates a wide percentages of fatalities by race, revealing the disparities in police-related fatalities among racial group. Black and Hispanic individuals have higher percentages of unarmed deaths to compared to other racial group representing the systemic biases in the police force. Native Americans show a disproportionate portion relative to their population size, showing their vulnerability to police forces.
+
+## **Comparing Unique Events to the Entire Dataset**
 
 ```{r}
 #Finding percentages of certain conditions
@@ -246,9 +369,6 @@ BLM_Covid <- data.frame(avg_shootings, round(average_age, 1), bodycam_percent, g
 names(BLM_Covid) <- c("Average Fatal Shootings Per Day", "Average Age", "Percent of officers with turned on body camera", "Armed (gun)", "Unarmed", "Armed (car)", "Signs of mental illness")
 rownames(BLM_Covid) <- c("BLM", "Covid-19", "Entire Dataset")
 BLM_Covid
-```
-
-```{r}
 #average shootings
 time_period <- c("BLM", "COVID", "Entire Database")
 colors <- c("lightblue", "lightgreen", "lightcoral")
@@ -336,144 +456,18 @@ ggplot(summary_data, aes(x = Dataset, y = Proportion, fill = AgeRange)) +
   ) +
   scale_y_continuous(labels = scales::percent_format()) + # Display y-axis as percentages
   theme_minimal()
-
 ```
 
-**Findings:**
+**Findings from comapring unique events to entire dataset:**
 
 During peak BLM movement periods, the percentage of officers with turned-on body cameras increases from approximately 14% to 21%. There is a positive correlation between average fatalities per day and the percentage of turned-on body cameras throughout all highlighted datasets.
 
 Also, as we can see during the two week peak of the BLM protests and riots, there was an increase from approximately 48% to 61% in fatal shootings of people who were over the age of 36. This increase tells us that most of the people who were part of these protests and riots were on the older side. This is somewhat surprising since according to Statista, a German online platform that provides data on a wide range of topics, most people that strongly agreed with the protest were between the age of 18 and 34. This was shown in a graph that shows the "level of support among U.S. adults for the protests in response to the death of George Floyd as of June 2020, by age." [Link for said graph](https://www.statista.com/statistics/1122591/support-george-floyd-protests-us-age/).
 
-# **Some Overall Race Statistics**
-
-```{r}
-# filtering data to include only unarmed incidents
-unarmed_data <- subset(FatalShootingsStats, FatalShootingsStats$armed == "unarmed")
-
-# count unarmed fatalities by race
-unarmed_deaths_by_race <- aggregate(unarmed_data$armed, 
-                                    by = list(Race = unarmed_data$race_name), 
-                                    FUN = length)
-colnames(unarmed_deaths_by_race)[2] <- "Unarmed_Deaths"
-
-# count display
-unarmed_deaths_by_race
-# count total fatalities by race
-total_deaths_by_race <- aggregate(FatalShootingsStats$armed, 
-                                  by = list(Race = FatalShootingsStats$race_name), 
-                                  FUN = length)
-
-# ensure all races are represented in unarmed deaths by race
-all_races <- unique(FatalShootingsStats$race_name)
-unarmed_deaths_by_race <- aggregate(unarmed_data$armed, 
-                                    by = list(Race = unarmed_data$race_name), 
-                                    FUN = length)
-unarmed_deaths_by_race <- merge(data.frame(Race = all_races), unarmed_deaths_by_race, 
-                                by = "Race", all.x = TRUE)
-unarmed_deaths_by_race[is.na(unarmed_deaths_by_race)] <- 0  # Replace NA with 0
-
-# merge total deaths and unarmed deaths
-race_unarmed_comparison <- merge(unarmed_deaths_by_race, total_deaths_by_race, 
-                                 by = "Race", 
-                                 suffixes = c("_Unarmed", "_Total"))
-
-# calculate percentage of unarmed fatalities for each race
-race_unarmed_comparison$Unarmed_Death_Percentage <- 
-  (race_unarmed_comparison$x_Unarmed / race_unarmed_comparison$x_Total) * 100
-
-# rename columns for clarity
-colnames(race_unarmed_comparison) <- c("Race", "Unarmed_Deaths", "Total_Deaths", "Unarmed_Death_Percentage")
-
-# display the updated data frame
-race_unarmed_comparison
-
-# adjust margins to give more space to labels
-par(mar = c(5, 10, 4, 2) + 0.1) # Increase left margin for y-axis labels
-
-# create a horizontal bar plot
-barplot(race_unarmed_comparison$Unarmed_Death_Percentage,
-names.arg = race_unarmed_comparison$Race,
-main = "Percentage of Unarmed Fatalities by Race",
-xlab = "Percentage of Unarmed Fatalities",
-col = "lightcoral",
-horiz = TRUE,       # Horizontal bars
-las = 1,            # Ensure labels are horizontal on y-axis
-cex.names = 0.9)    # Adjust label size if needed
-
-# reset margins after plotting (optional if running multiple plots in sequence)
-par(mar = c(5, 4, 4, 2) + 0.1)
-
-
-```
-
-The graph demonstrates a wide percentages of fatalities by race, revealing the disparities in police-related fatalities among racial group. Black and Hispanic individuals have higher percentages of unarmed deaths to compared to other racial group representing the systemic biases in the police force. Native Americans show a disproportionate portion relative to their population size, showing their vulnerability to police forces.
-
-```{r}
-# Check if the required columns exist
-if (!all(c("year", "race_name") %in% colnames(FatalShootingsStats))) {
-  stop("The columns 'year' and 'race_name' are missing in FatalShootingsStats.")
-}
-
-# Aggregate data to create race_year_counts
-race_year_counts <- FatalShootingsStats %>%
-  group_by(Year = year, Race = race_name) %>%  # Group by year and race
-  summarise(Count = n(), .groups = "drop")    # Count occurrences and ungroup
-
-# Ensure data completeness: Fill missing Year-Race combinations with zeros
-race_year_counts <- race_year_counts %>%
-  complete(Year, Race, fill = list(Count = 0))  # Fill missing combinations with 0 counts
-
-# Verify the resulting dataset
-print(head(race_year_counts))
-
-# Ensure the dataset has the required columns: Year, Race, Count
-# If not, aggregate data to create race_year_counts
-if (!"Count" %in% colnames(race_year_counts)) {
-  race_year_counts <- FatalShootingsStats %>%
-    group_by(Year = year, Race = race_name) %>%
-    summarise(Count = n(), .groups = "drop")
-}
-
-# Ensure data completeness: fill missing values with zeros for all combinations of Year and Race
-race_year_counts <- race_year_counts %>%
-  complete(Year, Race, fill = list(Count = 0))
-par(mar = c(2.1, 4.1, 4.1, 10.1), xpd=TRUE)
-# Set up an empty plot with the correct axes limits
-plot(NULL, xlim = range(race_year_counts$Year, na.rm = TRUE), 
-     ylim = c(0, 600), 
-     xlab = "Year", ylab = "Number of Fatal Shootings", 
-     main = "Fatal Shootings by Race Over the Years")
-
-# Define colors for each race
-race_colors <- c("blue", "green", "red", "purple", "orange", "pink", "gray")
-
-# Get unique races
-unique_races <- unique(race_year_counts$Race)
-
-# Loop through each race to plot its line on the graph
-for (i in 1:length(unique_races)) {
-  # Subset data for the current race
-  race_data <- subset(race_year_counts, Race == unique_races[i])
-  
-  # Ensure data is sorted by Year for proper line plotting
-  race_data <- race_data[order(race_data$Year), ]
-  
-  # Plot the line for this race
-  lines(race_data$Year, race_data$Count, type = "o", col = race_colors[i], pch = 16)
-}
-
-# Add a legend
-legend("topright", legend = unique_races, col = race_colors, pch = 16, lty = 1,inset = c(-0.4, 0))
-
-```
-
-A general trend is the decline in number of fatal shooting over the years, particularly 2020-2022 probably due to the pandemic reforming public interaction in police enforcement. The height of shootings in 2020 is likely caused from the Black Lives Matter movement
-
-Key Findings:
+## Key Findings:
 
 We found no significant correlation between the decreased spatial mobility during COVID-19 and the number of fatal shootings. Therefore we can not conclude if spatial mobility has a negative or positive impact on the number of Police fatal shootings. Additionally, we found a positive correlation between the average fatalities per day and the increased disdain towards police forces during peak BLM movement periods. Therefore we can conclude the current political/social climate has an impact on the average number of fatal shootings per day by police officers
 
-Final Questions:
+## Final Questions:
 
 Why is there a substantial jump in fatalities per day with unknown races, specifically beginning in 2020? What are the parameters needed to be categorized as an "unknown race"?
