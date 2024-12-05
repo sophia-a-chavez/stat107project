@@ -40,6 +40,14 @@ We expected to find strong correlations between the political and social environ
 
     We found no significant correlation between the decreased spatial mobility during COVID-19 and the number of fatal shootings. Therefore we can not conclude if spatial mobility has a negative or positive impact on the number of Police fatal shootings. Additionally, we found a positive correlation between the average fatalities per day and the increased disdain towards police forces during peak BLM movement periods. Therefore we can conclude the current political/social climate has an impact on the average number of fatal shootings per day by police officers
 
+Throughout the report, we will highlight specific time periods and states in our dataset that correlate to certain social events/movements. Below are our resources for the real-world events examined through the report.
+
+COVID-19
+
+“CDC Museum Covid-19 Timeline.” *Centers for Disease Control and Prevention*, Centers for Disease Control and Prevention, 15 Mar. 2023, www.cdc.gov/museum/timeline/covid19.html#:\~:text=March%2015%2C%202020,restaurants%20and%20bars%20to%20close.
+
+Kettl, Donald F. “States Divided: The Implications of American Federalism for Covid-19.” *Public Administration Review*, U.S. National Library of Medicine, 2020, pmc.ncbi.nlm.nih.gov/articles/PMC7280573/#:\~:text=By%20the%20end%20of%20March,at%20all%20(Ballotopedia%202020).
+
 #### Packages \~
 
 -   dplyr
