@@ -38,6 +38,8 @@ We expected to find strong correlations between the political and social environ
 
 -   Were there any correlations between the current political/social climate and the reported fatal police shootings in the United States?
 
+    We found no significant correlation between the decreased spatial mobility during COVID-19 and the number of fatal shootings. Therefore we can not conclude if spatial mobility has a negative or positive impact on the number of Police fatal shootings. Additionally, we found a positive correlation between the average fatalities per day and the increased disdain towards police forces during peak BLM movement periods. Therefore we can conclude the current political/social climate has an impact on the average number of fatal shootings per day by police officers
+
 #### Packages \~
 
 -   dplyr

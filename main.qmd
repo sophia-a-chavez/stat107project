@@ -12,7 +12,7 @@ editor: visual
 
 Our group will analyze a dataset containing the reported fatal police shootings in the United States from 2015 through 2022. We will be looking at location of shootings, age, race and certain conditions, like if the suspect was armed or not. By comparing our findings to social movements throughout those years, our goal is to identify any correlations between the current political/social climate and the reported fatal police shootings in the United States.
 
-Questions: - What did we expect to find? - What actually happened? - Does the data show systemic issues? - Why is there a substantial jump in fatalities per day with unknown races, specifically beginning in 2020? - Were there any correlations between the current political/social climate and the reported fatal police shootings in the United States?
+Questions: - What did we expect to find? - What actually happened? - Does the data show systemic issues? - Were there any correlations between the current political/social climate and the reported fatal police shootings in the United States?
 
 ```{r}
 FatalShootingsStats <- read.csv("FatalPoliceShootings_US.csv")
@@ -21,6 +21,7 @@ x <-head(FatalShootingsStats, 2)
 
 print(x)
 ```
+
 ```{r}
 suppressPackageStartupMessages(library(dplyr))
 suppressPackageStartupMessages(library(maps))
@@ -122,8 +123,7 @@ ggplot(BLM_period, aes(x = race_name)) +
   theme_minimal()
 ```
 
-This graph is a great example of why graphs don't always show the whole picture. According to this graph the white population had around double the fatal shootings compared to the black population during the period of riots and protests for the BLM movement. However, it is also important to keep in mind, the white population made up around 58% of the US population in 2020, while the black population only made up around 12%. So, this in an essence still shows systemic issues since even though there are over four times many white people as there are black people, the number of fatal shootings for white people was less than twice as many as black people. 
-
+This graph is a great example of why graphs don't always show the whole picture. According to this graph the white population had around double the fatal shootings compared to the black population during the period of riots and protests for the BLM movement. However, it is also important to keep in mind, the white population made up around 58% of the US population in 2020, while the black population only made up around 12%. So, this in an essence still shows systemic issues since even though there are over four times many white people as there are black people, the number of fatal shootings for white people was less than twice as many as black people.
 
 ## **Event 2: Covid-19 Lockdowns**
 
@@ -219,7 +219,7 @@ cat("Shootings per day during COVID-19 in states with no enforced lockdowns",sta
 
 ```
 
-We expect the total number of fatal shootings will decrease during the enforced lockdown period due to the decreased social gatherings. However, our results show a different pattern, in fact we can see that there was no significant drop in the number of average shootings per day before and during lockdowns. Additionally, we can see that during and before COVID-19 lockdowns, the number of fatal shootings decreased in both states with and without enforced lockdowns. The decreased number of shootings in non-enforced lockdown states may be attributed to the overall decreased spatial mobility in the US. Numerous households voluntarily quarantined regardless of their state's COVID-19 restrictions. Because we can identify a slight decreasing pattern in our data, we can conclude that the COVID-19 pandemic had little to no significant impact on the overall number of Police fatal shootings.
+We expect the total number of fatal shootings will decrease during the enforced lockdown period due to the decreased social gatherings. However, our results show a different pattern, in fact we can see that there was no significant drop in the number of average shootings per day before and during lockdowns. Additionally, we can see that during and before COVID-19 lockdowns, the number of fatal shootings decreased in both states with and without enforced lockdowns. The decreased number of shootings in non-enforced lockdown states may be attributed to the overall decreased spatial mobility in the US. Numerous households voluntarily quarantined regardless of their state's COVID-19 restrictions. Because we can not identify a significant decreasing pattern in our data, we can not conclude whether or not the COVID-19 pandemic had an impact on the overall number of Police fatal shootings.
 
 # **Fatal Shootings Dataset Analytics / Comparing Event 1 and 2**
 
@@ -341,7 +341,7 @@ ggplot(summary_data, aes(x = Dataset, y = Proportion, fill = AgeRange)) +
 
 **Findings:**
 
-During peak BLM movement periods, the percentage of officers with turned-on body cameras increases from approximately 14% to 21%. Additionally, there is a positive correlation between average fatalities per day and the percentage of turned-on body cameras throughout all highlighted datasets.
+During peak BLM movement periods, the percentage of officers with turned-on body cameras increases from approximately 14% to 21%. There is a positive correlation between average fatalities per day and the percentage of turned-on body cameras throughout all highlighted datasets.
 
 Also, as we can see during the two week peak of the BLM protests and riots, there was an increase from approximately 48% to 61% in fatal shootings of people who were over the age of 36. This increase tells us that most of the people who were part of these protests and riots were on the older side. This is somewhat surprising since according to Statista, a German online platform that provides data on a wide range of topics, most people that strongly agreed with the protest were between the age of 18 and 34. This was shown in a graph that shows the "level of support among U.S. adults for the protests in response to the death of George Floyd as of June 2020, by age." [Link for said graph](https://www.statista.com/statistics/1122591/support-george-floyd-protests-us-age/).
 
@@ -404,10 +404,10 @@ cex.names = 0.9)    # Adjust label size if needed
 # reset margins after plotting (optional if running multiple plots in sequence)
 par(mar = c(5, 4, 4, 2) + 0.1)
 
-# i think this code can be reused if we make the x axis the time period and show unarmed/armed deaths per race - sophia
-```
-The graph demonstrates a wide percentages of fatalities by race, revealing the disparities in police-related fatalities among racial group. Black and Hispanic individuals have higher percentages of unarmed deaths to compared to other racial group representing the systemic biases in the police force. Native Americans show a disproportionate portion relative to their population size, showing their vulnerability to police forces.
 
+```
+
+The graph demonstrates a wide percentages of fatalities by race, revealing the disparities in police-related fatalities among racial group. Black and Hispanic individuals have higher percentages of unarmed deaths to compared to other racial group representing the systemic biases in the police force. Native Americans show a disproportionate portion relative to their population size, showing their vulnerability to police forces.
 
 ```{r}
 # Check if the required columns exist
@@ -469,3 +469,11 @@ legend("topright", legend = unique_races, col = race_colors, pch = 16, lty = 1,i
 ```
 
 A general trend is the decline in number of fatal shooting over the years, particularly 2020-2022 probably due to the pandemic reforming public interaction in police enforcement. The height of shootings in 2020 is likely caused from the Black Lives Matter movement
+
+Key Findings:
+
+We found no significant correlation between the decreased spatial mobility during COVID-19 and the number of fatal shootings. Therefore we can not conclude if spatial mobility has a negative or positive impact on the number of Police fatal shootings. Additionally, we found a positive correlation between the average fatalities per day and the increased disdain towards police forces during peak BLM movement periods. Therefore we can conclude the current political/social climate has an impact on the average number of fatal shootings per day by police officers
+
+Final Questions:
+
+Why is there a substantial jump in fatalities per day with unknown races, specifically beginning in 2020? What are the parameters needed to be categorized as an "unknown race"?
