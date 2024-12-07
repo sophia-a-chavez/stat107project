@@ -458,11 +458,11 @@ ggplot(summary_data, aes(x = Dataset, y = Proportion, fill = AgeRange)) +
   theme_minimal()
 ```
 
-**Findings from comapring unique events to entire dataset:**
+**Findings from comparing unique events to entire dataset:**
 
-During peak BLM movement periods, the percentage of officers with turned-on body cameras increases from approximately 14% to 21%. There is a positive correlation between average fatalities per day and the percentage of turned-on body cameras throughout all highlighted datasets.
+During peak BLM movement periods, the percentage of officers with turned-on body cameras increases from approximately 14% to 21%. There is a positive correlation between average fatalities per day, and the percentage of turned-on body cameras throughout all highlighted datasets.
 
-Also, as we can see during the two week peak of the BLM protests and riots, there was an increase from approximately 48% to 61% in fatal shootings of people who were over the age of 36. This increase tells us that most of the people who were part of these protests and riots were on the older side. This is somewhat surprising since according to Statista, a German online platform that provides data on a wide range of topics, most people that strongly agreed with the protest were between the age of 18 and 34. This was shown in a graph that shows the "level of support among U.S. adults for the protests in response to the death of George Floyd as of June 2020, by age." [Link for said graph](https://www.statista.com/statistics/1122591/support-george-floyd-protests-us-age/).
+Additionally, we can see during the two week peak of the BLM protests and riots that there was an increase from approximately 48% to 61% in fatal shootings of people who were over the age of 36. This increase tells us that most of the people who were part of these protests and riots were on the older side. This is somewhat surprising since according to Statista, a German online platform that provides data on a wide range of topics, most people that strongly agreed with the protest were between the age of 18 and 34. This was shown in a graph that shows the "level of support among U.S. adults for the protests in response to the death of George Floyd as of June 2020, by age." [Link for said graph](https://www.statista.com/statistics/1122591/support-george-floyd-protests-us-age/).
 
 ## Key Findings:
 
