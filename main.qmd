@@ -404,60 +404,60 @@ par(mar = c(5, 4, 4, 2) + 0.1)
 The graph demonstrates a wide percentages of fatalities by race, revealing the disparities in police-related fatalities among racial group. Black and Hispanic individuals have higher percentages of unarmed deaths to compared to other racial group representing the systemic biases in the police force. Native Americans show a disproportionate portion relative to their population size, showing their vulnerability to police forces.
 
 ```{r}
-# Check if the required columns exist
+# check if the required columns exist
 if (!all(c("year", "race_name") %in% colnames(FatalShootingsStats))) {
   stop("The columns 'year' and 'race_name' are missing in FatalShootingsStats.")
 }
 
-# Aggregate data to create race_year_counts
+# aggregate data to create race_year_counts
 race_year_counts <- FatalShootingsStats %>%
   group_by(Year = year, Race = race_name) %>%  # Group by year and race
   summarise(Count = n(), .groups = "drop")    # Count occurrences and ungroup
 
-# Ensure data completeness: Fill missing Year-Race combinations with zeros
+# ensure data completeness: Fill missing Year-Race combinations with zeros
 race_year_counts <- race_year_counts %>%
   complete(Year, Race, fill = list(Count = 0))  # Fill missing combinations with 0 counts
 
-# Verify the resulting dataset
+# verify the resulting dataset
 print(head(race_year_counts))
 
-# Ensure the dataset has the required columns: Year, Race, Count
-# If not, aggregate data to create race_year_counts
+# ensure the dataset has the required columns: Year, Race, Count
+# if not, aggregate data to create race_year_counts
 if (!"Count" %in% colnames(race_year_counts)) {
   race_year_counts <- FatalShootingsStats %>%
     group_by(Year = year, Race = race_name) %>%
     summarise(Count = n(), .groups = "drop")
 }
 
-# Ensure data completeness: fill missing values with zeros for all combinations of Year and Race
+# ensure data completeness: fill missing values with zeros for all combinations of Year and Race
 race_year_counts <- race_year_counts %>%
   complete(Year, Race, fill = list(Count = 0))
 
-# Set up an empty plot with the correct axes limits
+# set up an empty plot with the correct axes limits
 plot(NULL, xlim = range(race_year_counts$Year, na.rm = TRUE), 
      ylim = c(0, max(race_year_counts$Count, na.rm = TRUE)), 
      xlab = "Year", ylab = "Number of Fatal Shootings", 
      main = "Fatal Shootings by Race Over the Years")
 
-# Define colors for each race
+# define colors for each race
 race_colors <- c("blue", "green", "red", "purple", "orange", "pink", "gray")
 
-# Get unique races
+# get unique races
 unique_races <- unique(race_year_counts$Race)
 
-# Loop through each race to plot its line on the graph
+# loop through each race to plot its line on the graph
 for (i in 1:length(unique_races)) {
   # Subset data for the current race
   race_data <- subset(race_year_counts, Race == unique_races[i])
   
-  # Ensure data is sorted by Year for proper line plotting
+  # ensure data is sorted by Year for proper line plotting
   race_data <- race_data[order(race_data$Year), ]
   
-  # Plot the line for this race
+  # plot the line for this race
   lines(race_data$Year, race_data$Count, type = "o", col = race_colors[i], pch = 16)
 }
 
-# Add a legend
+# add a legend
 legend("topright", legend = unique_races, col = race_colors, pch = 16, lty = 1)
 
 ```
