@@ -134,7 +134,7 @@ This graph is a great example of why graphs don't always show the whole picture.
 
 ## **Event 2: Covid-19 Lockdowns**
 
-On January 5th, 2020, the CDC’s National Center for Immunization and Respiratory Diseases investigated the outbreak of a pneumonia-adjacent illness that was not responding to treatment, and by March 15th all but 7 U.S states shut down businesses, universities, and other large gatherings while urging people to stay in their homes to slow the spread. By analyzing our original dataset with respect to enforced quarantine periods, we can identify possible correlations between spatial mobility and fatal shootings in the US.
+On January 5th, 2020, the CDC’s National Center for Immunization and Respiratory Diseases investigated the outbreak of a pneumonia-adjacent illness that was not responding to treatment, and by March 15th all but 7 U.S states shut down businesses, universities, and other large gatherings while urging people to stay in their homes to slow the spread. By analyzing our original dataset with respect to enforced quarantine periods, we can identify possible correlations between spatial mobility and the number of Police fatal shootings in the US.
 
 ```{r}
 #| code-fold: true
