@@ -62,7 +62,11 @@ Our group investigates the pattern and disparties of Fatal Police Shootings in t
 
 -   What did we expect? What actually happened?
 
-We expected to find strong correlations between the political and social environment and the trends of fatal police shooting in the United States.
+We expected to find strong correlations between the political and social environment and the trends of fatal police shooting in the United States. Specifically, we hoped that the fluctuation in death aligned with social/political movement and spatial movements. 
+
+What we actually found was that the correlations between spatial movements during the pandemic had low or none effects on the number of fatal shooting while, the BLM movement during the pandemic did. While the number of fatal shootings in general, there was a decrease against unarmed individuals which entails the awareness around unwarranted police brutality. 
 
 -   Were there any correlations between the current political/social climate and the reported fatal police shootings in the United States?
+
+Yes, there was some correlations, but they were not as strong or as consistent as we initially thought. Evidence of BLM influencing the trend of police shooting, reporting practice, and systemic issues results in true.
 
