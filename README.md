@@ -52,3 +52,27 @@ What we actually found was that the correlations between spatial movements durin
 
 Yes, there was some correlations, but they were not as strong or as consistent as we initially thought. Evidence of BLM influencing the trend of police shooting, reporting practice, and systemic issues results in true.
 
+#### Sources \~
+
+Throughout the report, we will highlight specific time periods and states in our dataset that correlate to certain social events/movements. Below are our resources for the real-world events examined through the report.
+
+COVID-19
+
+“CDC Museum Covid-19 Timeline.” *Centers for Disease Control and Prevention*, Centers for Disease Control and Prevention, 15 Mar. 2023, www.cdc.gov/museum/timeline/covid19.html#:\~:text=March%2015%2C%202020,restaurants%20and%20bars%20to%20close.
+
+Kettl, Donald F. “States Divided: The Implications of American Federalism for Covid-19.” *Public Administration Review*, U.S. National Library of Medicine, 2020, pmc.ncbi.nlm.nih.gov/articles/PMC7280573/#:\~:text=By%20the%20end%20of%20March,at%20all%20(Ballotopedia%202020).
+
+BLM
+
+Walters, Joanna. “George Floyd Protests: The US Cities That Became Hotspots of Unrest.” *The Guardian*, Guardian News and Media, 31 May 2020, www.theguardian.com/us-news/2020/may/31/george-floyd-protests-us-cities-hotspots-unrest.
+
+#### Packages \~
+
+-   dplyr
+
+-   maps
+
+-   tidyverse
+
+-   ggplot2
+
