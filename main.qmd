@@ -293,6 +293,7 @@ par(mar = c(5, 4, 4, 2) + 0.1)
 ```
 
 ```{r}
+#| code-fold: true
 # check if the required columns exist
 
 if (!all(c("year", "race_name") %in% colnames(FatalShootingsStats))) {
