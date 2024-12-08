@@ -15,6 +15,7 @@ Our group will analyze a dataset containing the reported fatal police shootings 
 Questions: - What did we expect to find? - What actually happened? - Does the data show systemic issues? - Were there any correlations between the current political/social climate and the reported fatal police shootings in the United States?
 
 ```{r}
+#| code-fold: true
 FatalShootingsStats <- read.csv("FatalPoliceShootings_US.csv")
 
 x <-head(FatalShootingsStats, 2)
@@ -23,6 +24,7 @@ print(x)
 ```
 
 ```{r}
+#| code-fold: true
 suppressPackageStartupMessages(library(dplyr))
 suppressPackageStartupMessages(library(maps))
 suppressPackageStartupMessages(library(tidyverse))
@@ -30,6 +32,7 @@ suppressPackageStartupMessages(library(ggplot2))
 ```
 
 ```{r}
+#| code-fold: true
 #Convert the `date` column to Date format so can extract the year
 FatalShootingsStats$date <- as.Date(FatalShootingsStats$date, format = "%m/%d/%Y")
 
@@ -42,6 +45,7 @@ FatalShootingsStats$year <- as.integer(format(FatalShootingsStats$date, "%Y"))
 On May 25, 2020, George Floyd, a Black man living in Minneapolis, Minnesota was brutally killed by a Minneapolis police officer. This sparked a new peak in the Black Lives Matter (BLM) movement, where there was a new wave of both peaceful protests and riots. The peak of the BLM riots, vandalism, arson and looting occurred from May 26th to June 8th in 2020. During these 2 weeks, were fatal shootings higher than normal?
 
 ```{r}
+#| code-fold: true
 # Specify the two specific dates
 date1 <- as.Date("2020-05-26")  
 date2 <- as.Date("2020-06-08")  
@@ -80,6 +84,7 @@ cat("Average shootings per day for the entire dataset:", avg_shootings_per_day_t
 ```
 
 ```{r}
+#| code-fold: true
 # Create a vector with the two averages
 average_shootings <- c(avg_shootings_per_day_BLM, avg_shootings_per_day_total)
 
@@ -94,6 +99,7 @@ barplot(average_shootings,
 ```
 
 ```{r}
+#| code-fold: true
 state_to_highlight <- "Minnesota"
 
 # Basic Map Plot
@@ -115,6 +121,7 @@ points(BLM_period$longitude, BLM_period$latitude, col = "red", pch = 20, cex = 1
 As we can see, the average number of fatal shootings a day were slightly greater during the peak of the riots, vandalism, arson and looting after George Floyd's death. Surprisingly, none of the deaths occurred in Minneapolis, which was a hot spot for said BLM riots, but Los Angeles, which was also a hot spot, is shown to have a few deaths in it's area. So, while the average number of fatal shooting during the peak of the BLM riots period doesn't seem that much larger than the average number of fatal shootings in the entire data set, it doesn't tell the entire picture. If the average number of fatal shootings during the seven and a half years the data set encapsulates was the same as the average during the peak of the BLM riots, there would be an increase of 1,769 fatal shootings or 236 fatal shootings a year.
 
 ```{r}
+#| code-fold: true
 ggplot(BLM_period, aes(x = race_name)) +
   geom_bar(fill = "skyblue") +
   labs(title = "Bar Graph of Fatal Shootings by Race during BLM Period",
@@ -130,6 +137,7 @@ This graph is a great example of why graphs don't always show the whole picture.
 On January 5th, 2020, the CDC’s National Center for Immunization and Respiratory Diseases investigated the outbreak of a pneumonia-adjacent illness that was not responding to treatment, and by March 15th all but 7 U.S states shut down businesses, universities, and other large gatherings while urging people to stay in their homes to slow the spread. By analyzing our original dataset with respect to enforced quarantine periods, we can identify possible correlations between spatial mobility and fatal shootings in the US.
 
 ```{r}
+#| code-fold: true
 # filtering data by covid lockdown timeline
 during_date1 <- as.Date("2020-03-15")  # main US lockdown start
 during_date2 <- as.Date("2021-05-01")  # need to find sorce for this date
@@ -168,6 +176,7 @@ cat("After the lockdowns: Total shootings ",total_shootings_after," Average shoo
 ```
 
 ```{r}
+#| code-fold: true
 state_to_highlight <- c("Arkansas", "Iowa", "Nebraska", "North Dakota", "South Dakota", "Utah", "Wyomming") #sates that never enforced lockdown
 
 # Basic Map Plot
@@ -196,6 +205,7 @@ title( "After Covid-19 Lockdown")
 Map Visual Note: It’s important to remember the fatal shootings dataset has more data points before the COVID-19 pandemic compared to after. The higher density of shootings before the COVID-19 lockdowns can be linked to the skewed dataset/states with higher population
 
 ```{r}
+#| code-fold: true
 #"Arkansas", "Iowa", "Nebraska", "North Dakota", "South Dakota", "Utah", "Wyomming"
 ## Arkansas data 
 before_ar <- before_covid %>%
@@ -221,9 +231,10 @@ cat("Shootings per day during COVID-19 in states with no enforced lockdowns",sta
 
 We expect the total number of fatal shootings will decrease during the enforced lockdown period due to the decreased social gatherings. However, our results show a different pattern, in fact we can see that there was no significant drop in the number of average shootings per day before and during lockdowns. Additionally, we can see that during and before COVID-19 lockdowns, the number of fatal shootings decreased in both states with and without enforced lockdowns. The decreased number of shootings in non-enforced lockdown states may be attributed to the overall decreased spatial mobility in the US. Numerous households voluntarily quarantined regardless of their state's COVID-19 restrictions. Because we can not identify a significant decreasing pattern in our data, we can not conclude whether or not the COVID-19 pandemic had an impact on the overall number of Police fatal shootings.
 
-## **Fatal Shootings Race Analytics** 
+## **Fatal Shootings Race Analytics**
 
 ```{r}
+#| code-fold: true
 # filtering data to include only unarmed incidents
 unarmed_data <- subset(FatalShootingsStats, FatalShootingsStats$armed == "unarmed")
 
@@ -283,6 +294,7 @@ par(mar = c(5, 4, 4, 2) + 0.1)
 
 ```{r}
 # check if the required columns exist
+
 if (!all(c("year", "race_name") %in% colnames(FatalShootingsStats))) {
   stop("The columns 'year' and 'race_name' are missing in FatalShootingsStats.")
 }
@@ -310,13 +322,12 @@ if (!"Count" %in% colnames(race_year_counts)) {
 # ensure data completeness: fill missing values with zeros for all combinations of Year and Race
 race_year_counts <- race_year_counts %>%
   complete(Year, Race, fill = list(Count = 0))
-<<<<<<< HEAD
+
 
 # set up an empty plot with the correct axes limits
-=======
+
 par(mar = c(2.1, 4.1, 4.1, 10.1), xpd=TRUE)
 # Set up an empty plot with the correct axes limits
->>>>>>> d33d10e57ec04d1dbf9c27552a1e1ff1d18f13de
 plot(NULL, xlim = range(race_year_counts$Year, na.rm = TRUE), 
      ylim = c(0, 600), 
      xlab = "Year", ylab = "Number of Fatal Shootings", 
@@ -340,13 +351,8 @@ for (i in 1:length(unique_races)) {
   lines(race_data$Year, race_data$Count, type = "o", col = race_colors[i], pch = 16)
 }
 
-<<<<<<< HEAD
 # add a legend
-legend("topright", legend = unique_races, col = race_colors, pch = 16, lty = 1)
-=======
-# Add a legend
 legend("topright", legend = unique_races, col = race_colors, pch = 16, lty = 1,inset = c(-0.4, 0))
->>>>>>> d33d10e57ec04d1dbf9c27552a1e1ff1d18f13de
 
 ```
 
@@ -357,6 +363,7 @@ A general trend is the decline in number of fatal shooting over the years, parti
 ## **Comparing Unique Events to the Entire Dataset**
 
 ```{r}
+#| code-fold: true
 #Finding percentages of certain conditions
 bodycam_true <- c(sum(during_covid$body_camera == "TRUE"), sum(BLM_period$body_camera == "TRUE"), sum(FatalShootingsStats$body_camera == "TRUE"))
 
@@ -409,6 +416,7 @@ legend("topright", legend = time_period , col = colors, pch = 16)
 ```
 
 ```{r}
+#| code-fold: true
 BLM_period$age <- as.numeric(as.character(BLM_period$age))
 during_covid$age <- as.numeric(as.character(during_covid$age))
 FatalShootingsStats$age <- as.numeric(as.character(FatalShootingsStats$age))
